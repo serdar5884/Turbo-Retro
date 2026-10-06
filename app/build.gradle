@@ -1,14 +1,31 @@
 plugins { id 'com.android.application' }
 android {
     namespace 'com.turboretro.game'
-    compileSdk 34
+    compileSdk 36
     defaultConfig {
         applicationId "com.turboretro.game"
         minSdk 24
-        targetSdk 34
-        versionCode 51
-        versionName "8.6"
+        targetSdk 36
+        versionCode 53
+        versionName "8.8"
     }
-    buildTypes { release { minifyEnabled false } }
+    signingConfigs {
+        release {
+            def ks = System.getenv("TR_KEYSTORE")
+            if (ks != null && file(ks).exists()) {
+                storeFile file(ks)
+                storePassword System.getenv("TR_KEYSTORE_PASSWORD")
+                keyAlias "upload"
+                keyPassword System.getenv("TR_KEYSTORE_PASSWORD")
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            def ks = System.getenv("TR_KEYSTORE")
+            signingConfig (ks != null && file(ks).exists()) ? signingConfigs.release : signingConfigs.debug
+        }
+    }
     compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
 }
