@@ -3,7 +3,7 @@ android {
     namespace 'com.turboretro.game'
     compileSdk 36
     defaultConfig {
-        applicationId "com.turboretro.game"
+        applicationId "com.salihstudio.turboretro"
         minSdk 24
         targetSdk 36
         versionCode 54
