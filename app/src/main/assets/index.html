@@ -1,7 +1,8 @@
 <!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Turbo Retro</title>
 <style>
-@font-face{font-family:'Bungee';src:url(fonts/bungee-latin-400-normal.woff2) format('woff2');font-weight:400}
+@font-face{font-family:'Bungee';src:url(fonts/bungee-latin-ext-400-normal.woff2) format('woff2');font-weight:400;unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Bungee';src:url(fonts/bungee-latin-400-normal.woff2) format('woff2');font-weight:400;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 @font-face{font-family:'Nunito';src:url(fonts/nunito-latin-ext-600-normal.woff2) format('woff2');font-weight:600;unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 @font-face{font-family:'Nunito';src:url(fonts/nunito-latin-600-normal.woff2) format('woff2');font-weight:600}
 @font-face{font-family:'Nunito';src:url(fonts/nunito-latin-ext-800-normal.woff2) format('woff2');font-weight:800;unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
@@ -648,6 +649,755 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-o
 <style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
 #bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
 </style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
+<style id="menuLS">
+/* Yatay ekran menüsü: araç ortada görünür, panel sağa; OYNA butonu sol altta sabit */
+@media (orientation:landscape) and (min-width:600px){
+  #menu{justify-content:flex-start;align-items:stretch;padding:0}
+  #menu .logo{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);margin:0;white-space:nowrap;z-index:1}
+  #menu .logo b{display:inline-block;font-size:clamp(28px,8.5vh,64px)}#menu .logo .l2{margin-left:.25em}
+  #menu .logo small{display:none}
+  #menu .card{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 62px);width:min(320px,36vw);max-height:calc(100vh - 74px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;
+    -webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(12,28,72,.82);padding:12px;gap:8px}
+  #menu .hint{display:none}
+  #menu #pname{font-size:16px;padding:9px 12px}
+  #menu .lbl{font-size:10px}
+  #menu #startBtn{position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:min(270px,34vw);z-index:6;font-size:22px;padding:13px}
+}
+@media (orientation:landscape) and (max-height:560px){#menu .bestline{display:none}#menu .card{gap:6px}}
+/* 844x390 gibi alçak yatay ekran: panel sağ üst köşeye sıkışır (ses butonunun altında), araç/karakter sol-ortada açık kalır, OYNA sol altta görünür */
+@media (orientation:landscape) and (min-width:600px) and (max-height:480px){
+  #menu .card{width:clamp(198px,27vw,222px);padding:8px;gap:5px;top:calc(env(safe-area-inset-top,0px) + 62px);max-height:calc(100vh - 70px);background:rgba(12,28,72,.78)}
+  #menu .lvlrow{font-size:11px;gap:6px}#menu .lvlrow span{font-size:10px}
+  #menu #pname{font-size:15px;padding:6px 10px}#menu .lbl{font-size:9px;margin:0}
+  #menu .ghost{font-size:9.5px;padding:6px 2px;letter-spacing:0;white-space:normal;line-height:1.15;min-height:0}
+  #menu .row{gap:5px}#menu .pill{padding:3px 7px;font-size:12px}
+  #menu #startBtn{width:min(236px,30vw);font-size:20px;padding:11px}
+  #menu .logo b{font-size:clamp(24px,7.5vh,48px)}
+}
+</style>
+<style id="bossFix">/* boss barı UFO'yu örtmesin: alt orta, tıklamaz */
+#bossBar{position:fixed;left:50%;right:auto;top:auto;bottom:max(8px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);margin:0;width:min(280px,42vw);z-index:6;pointer-events:none}
+</style>
+<style id="hudFix">.boxes{background:rgba(8,16,40,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border-radius:12px;padding:8px 10px;box-shadow:0 2px 10px rgba(0,0,0,.35)}.boxes .k{text-shadow:0 1px 3px #000;font-weight:800}</style>
 </head><body>
 <canvas id="c"></canvas>
 <canvas id="fx"></canvas>
@@ -664,6 +1414,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-o
     <button class="big" id="startBtn">OYNA / START</button>
     <div class="row"><button class="ghost party" id="worldBtn">🌍 DÜNYA</button><button class="ghost party" id="partyBtn">👥 ONLINE OYUN</button></div>
     <div class="row"><button class="ghost party qbtn" id="questBtn">📋 GÖREVLER<em class="dot" id="qDot" hidden></em></button><button class="ghost party" id="achBtn">🏆 BAŞARIMLAR</button></div>
+    <button class="ghost party" id="quizBtn">🕌 BİLGİ YARIŞMASI</button>
     <button class="ghost mgar" id="garageBtn">🏠 GARAJ · <span id="mSel">Turbo Retro</span></button>
     <div class="row mcoins">
       <div class="pill coins"><i></i><span id="mGold">0</span></div><div class="pill coins"><i class="gem"></i><span id="mGems">0</span></div><div class="pill coins"><i class="crys"></i><span id="mCrys">0</span></div>
@@ -705,6 +1456,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-o
         </div>
         <div class="hearts" id="hHearts"></div>
           <button class="pill hgar" id="hGar"><svg viewBox="0 0 20 20" width="18" height="18"><path d="M3 9.5 10 4l7 5.5V17H3z" fill="none" stroke="#ffcf3f" stroke-width="2" stroke-linejoin="round"/><rect x="6.5" y="11" width="7" height="6" fill="#ffcf3f"/></svg>GARAJ</button>
+          <button class="pill hgar" id="hMenu">⌂ ANA MENÜ</button>
 
       </div>
     </div>
@@ -732,6 +1484,14 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-o
     <div class="row"><button class="pill hgar hcam" id="wCam"><svg viewBox="0 0 20 20" width="18" height="18"><rect x="2" y="6" width="12" height="9" rx="2" fill="none" stroke="#41f0ff" stroke-width="2"/><path d="M14 9l4-2.5v8L14 12z" fill="#41f0ff"/></svg><span id="wCamN">KAMERA</span></button><div class="pill coins"><i></i><span id="wGold">0</span></div><div class="pill coins"><i class="gem"></i><span id="wGems">0</span></div><div class="pill coins"><i class="crys"></i><span id="wCrys">0</span></div></div></div>
   <div class="wbottom"><button class="big green" id="wGift" hidden>🎁 HEDİYE GÖNDER</button><button class="big" id="wAct" hidden>GİR</button><p class="hint whint"><b id="wArea">DÜNYA MEYDANI</b><br>Sol yarı: sürükle, yürü · Sağ yarı: sürükle, etrafa bak · 🎥 kamera açısı</p></div>
 </div>
+<div id="quiz" class="screen modal" hidden>
+  <div class="card qzcard">
+    <div id="qzHome"><h3>🕌 BİLGİ YARIŞMASI</h3><p class="hint">Yaş grubunu seç, sorular ve kurallar sana göre değişir: küçüklerde yanlış cevap can götürmez; büyüklerde süre kısa, ceza var. Hızlı ve üst üste doğru cevap daha çok puan, puanlar altına dönüşür. Orta/zor sorular 💎 ve 🔮 de verir. 10/10 yaparsan büyük ödül. Rütben puanınla yükselir. Kazandıklarınla garajdan araç, sürücü ve aksesuar alabilirsin.</p><div class="qzages"><button class="ghost qzage" data-a="7-10">7–10 yaş</button><button class="ghost qzage" data-a="11-14">11–14 yaş</button><button class="ghost qzage" data-a="15-18">15 yaş ve üzeri</button></div><p class="hint" id="qzInfo"></p><button class="big green" id="qzGo">YARIŞMAYA BAŞLA</button><button class="ghost" id="qzX1">Kapat</button></div>
+    <div id="qzPlay" hidden><div class="qzno" id="qzNo"></div><div class="qzbar"><b id="qzBar"></b></div><h3 id="qzQ" class="qzq"></h3><div id="qzOpts" class="qzopts"></div><p class="hint qzmsg" id="qzMsg"></p><button class="ghost" id="qzX2">Çık</button></div>
+    <div id="qzEnd" hidden><h3>TUR BİTTİ</h3><p class="qzres" id="qzRes"></p><button class="big green" id="qzAgain">YENİ TUR</button><button class="ghost" id="qzX3">Kapat</button></div>
+  </div>
+</div>
+<style id="qzCss">.qzcard{max-height:calc(100dvh - 14px);overflow-y:auto;text-align:center}#quiz .qzq{font:800 20px/1.3 Nunito,system-ui,sans-serif!important;text-shadow:none!important;letter-spacing:0!important;text-transform:none!important;margin:8px 0;color:#fff}.qzopts{display:grid;gap:8px;margin:8px 0}.qzopt{font:800 16px Nunito,system-ui,sans-serif;color:#fff;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.28);border-radius:14px;padding:12px 10px;min-height:46px}.qzopt.ok{background:#1faa59;border-color:#9af0be}.qzopt.bad{background:#d63a46;border-color:#ffb3b8}.qzbar{height:8px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden}.qzbar b{display:block;height:100%;background:linear-gradient(90deg,#ffd43a,#ff6a3a);width:100%}.qzno{font:800 13px Nunito,sans-serif;opacity:.9;margin-bottom:6px}.qzmsg{min-height:34px;white-space:pre-line;font-size:13px}.qzages{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:8px 0}.qzage.on{background:#ffd43a;color:#2a1a00;border-color:#fff}#qzGo:disabled{opacity:.5}.qzres{font-size:20px;line-height:1.6}@media (max-height:480px){#quiz .qzq{font-size:16px!important;margin:4px 0}.qzopts{grid-template-columns:1fr 1fr;gap:6px}.qzopt{padding:7px 6px;min-height:36px;font-size:14px}.qzmsg{min-height:20px}}</style>
 <div id="quests" class="screen modal" hidden>
   <div class="card qcard"><div class="gtabs"><button id="qtQ" class="on">📋 GÜNLÜK GÖREVLER</button><button id="qtA">🏆 BAŞARIMLAR</button><button id="qtB">📚 ALBÜM</button></div>
   <div class="qlvl" id="qLvl">SEVİYE 1</div><div id="qList" class="qlist"></div><button class="ghost" id="qClose">Kapat</button></div>
@@ -810,8 +1570,9 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-o
 <div id="pause" class="screen modal" hidden>
   <div class="card">
     <h3>MOLA</h3>
-    <button class="big" id="resumeBtn">DEVAM</button>
-    <div class="row" style="justify-content:center"><button class="ghost" id="restartBtn">Baştan</button><button class="ghost" id="pGar">Garaj</button><button class="ghost" id="pSnd">Ses</button><button class="ghost" id="quitBtn">Menü</button></div>
+    <button class="big green" id="resumeBtn">DEVAM</button>
+    <div class="row" style="justify-content:center"><button class="ghost" id="restartBtn">Baştan</button><button class="ghost" id="pGar">Garaj</button><button class="ghost" id="pSnd">Ses</button></div>
+    <button class="big" id="quitBtn" style="margin-top:12px;background:linear-gradient(#ff6a5a,#d62828);color:#fff">⌂ ANA MENÜYE ÇIK</button>
   </div>
 </div>
 
@@ -852,6 +1613,7 @@ const ROSTER=[
  {id:'kanat',name:'Vecihi',desc:'Kırmızı-krem çift kanatlı eski uçak. Çok tasarruflu, altın çeker.',price:260,spd:1.0,eco:1.3,armor:3,mag:1.35},
  {id:'altin',name:'Altın Ok',desc:'Parlak sarı spor coupe. Çok hızlı ve çevik.',price:380,spd:1.2,eco:.95,armor:3,mag:1.1},
  {id:'buzjet',name:'Astro Jet',desc:'Mavi savaş jeti, kırmızı şeritli. Hızlı ve sağlam: 4 kalp.',price:480,spd:1.24,eco:.95,armor:4,mag:1},
+ {id:'tork',name:'TORK T-10X',desc:'Mavi elektrikli SUV: dengeli, sağlam ve hızlı. 4 kalp.',price:520,spd:1.16,eco:1.12,armor:4,mag:1.15},
  {id:'ejder',name:'Zümrüt Ejder',desc:'Efsanevi: hızlı, verimli, 5 kalp.',price:950,spd:1.25,eco:1.15,armor:5,mag:1.6}
 ];
 const byId=id=>ROSTER.find(r=>r.id===id)||ROSTER[0];
@@ -889,6 +1651,8 @@ function menuInfo(){$('#mGems').textContent=fmt(gems);$('#mCrys').textContent=fm
 menuInfo();
 
 /* ---------- Zones ---------- */
+const ROADN={'Banliyö Sabahı':'Bağdat Caddesi','Kiraz Sokağı':'İstiklal Caddesi','Kule Kavşağı':'TEM Otoyolu','Zeplin Rotası':'Anadolu Otoyolu','Sahil Bulvarı':'Karadeniz Sahil Yolu','Sonbahar Caddesi':'Tunalı Hilmi Cd.','Neon Gece':'Vatan Caddesi','Gün Batımı':'Barbaros Bulvarı','Kış Kenti':'Doktorlar Caddesi','Retroville Meydanı':'Atatürk Bulvarı','Şelale Vadisi':'Gemlik / Bursa','Dağ Geçidi':'Bolu Dağı Geçidi','Uzay Diyarı':'Kuzey Marmara (O-4)','Lav Dünyası':'E-5 Karayolu','Şeker Diyarı':'Kıbrıs Şehitleri'};
+const rnm=t=>ROADN[t.name]||t.name;
 const TD={bld:'house',traf:['car'],tcol:['#00d1b2','#ffcc00','#2f7bff','#a23cff','#ff7a00','#ff2fa0'],fx:'none',sun:'#fffaf0',sunI:1.5,hemi:'#cfe8ff',hemiI:.5,trunk:'#7a5232',road:'#ffffff',walk:'#f3f0ea',hedge:'#0e9a35',glow:'#41f0ff',gi:.6,exposure:1,blimps:false,night:false,snow:false,palm:false,win:0};
 const THEMES=[
  {name:'Banliyö Sabahı',top:'#0062ff',hor:'#7fd0ff',bot:'#36c24a',gnd:'#4f9f3c',leaf:['#12b33a','#3ddc3a'],house:['#ff3d6e','#2f7bff','#ffc300','#00c98d','#ff7a00','#8a3cff'],roof:['#ff2a00','#ff5a00','#e8121c','#ff7300']},
@@ -899,7 +1663,7 @@ const THEMES=[
  {name:'Sonbahar Caddesi',traf:['bus','car'],tcol:['#c0392b','#f4a259','#5b8e7d'],fx:'fuel',top:'#2f6bd8',hor:'#ffd59e',bot:'#d08b3a',gnd:'#9bb83a',leaf:['#ff6a00','#ffb300'],house:['#c0392b','#f4a259','#5b8e7d','#f4e285','#bc4b51'],roof:['#5b2a16','#8c3b1f','#c44900'],sun:'#ffd29a',hemi:'#ffe2b8',road:'#ffe0b5',walk:'#f6e3c8',hedge:'#c06a1d',glow:'#ffb347',gi:1},
  {name:'Neon Gece',bld:'tower',traf:['saucer'],tcol:['#f72585','#4cc9f0','#7209b7'],fx:'speed',night:true,top:'#05061f',hor:'#3a1a6e',bot:'#120a2e',gnd:'#16223e',leaf:['#00a86b','#00e08f'],house:['#3a0ca3','#7209b7','#f72585','#4361ee','#4cc9f0'],roof:['#1b1b3a','#2d0a4e','#560bad'],sun:'#9fb4ff',sunI:.45,hemi:'#6a5be8',hemiI:.35,road:'#7a6bd0',walk:'#5a5f8a',hedge:'#0b6e4f',glow:'#ff2fd8',gi:3,win:1.6,exposure:1.25},
  {name:'Gün Batımı',bld:'shop',traf:['car','saucer'],tcol:['#ffd166','#ef476f','#06d6a0'],fx:'coin',top:'#3b2aa8',hor:'#ff7a59',bot:'#ff5e7e',gnd:'#3a7f4a',sun:'#ff9a6b',hemi:'#ffb3a1',leaf:['#2a9d4a','#57c75a'],house:['#ffd166','#ef476f','#06d6a0','#118ab2','#ff9f1c'],roof:['#8338ec','#c1121f','#ff5400'],road:'#ffd0c2',walk:'#ffe5d9',hedge:'#2a7a3a',glow:'#ffd166',gi:1.8,win:.7},
- {name:'Kış Kenti',bld:'dome',traf:['bus','car'],tcol:['#d62828','#003049','#fcbf49'],fx:'ice',top:'#3d8bff',hor:'#e6f4ff',bot:'#ffffff',gnd:'#f2f7ff',leaf:['#eaf6ff','#ffffff'],house:['#d62828','#003049','#fcbf49','#2a9d8f','#e76f51'],roof:['#ffffff','#eef4ff'],road:'#e3ecff',walk:'#ffffff',hedge:'#dfeeff',trunk:'#5a3a22',glow:'#9be7ff',snow:true,sunI:1.3},
+ {name:'Kış Kenti',bld:'dome',traf:['bus','car'],tcol:['#d62828','#003049','#fcbf49'],fx:'ice',top:'#3d8bff',hor:'#e6f4ff',bot:'#ffffff',gnd:'#e2ebfa',leaf:['#d6ebff','#f4faff'],house:['#d62828','#003049','#fcbf49','#2a9d8f','#e76f51'],roof:['#ffffff','#eef4ff'],road:'#c9d6f0',walk:'#eef4ff',hedge:'#c8def5',trunk:'#5a3a22',glow:'#9be7ff',snow:true,sunI:1.3},
  {name:'Retroville Meydanı',bld:'tower',traf:['car','bus','saucer'],fx:'speed',top:'#0040ff',hor:'#ffcf6b',bot:'#ff9a3c',gnd:'#4f9f3c',sun:'#ffe1a6',leaf:['#00b140','#7bdc2a'],house:['#ff2a2a','#ffcc00','#0062ff','#00c98d','#ff7a00','#ff2fa0'],roof:['#ffcc00','#ff2a00','#0047d6'],road:'#fff1c2',walk:'#fff6dc',glow:'#ffcc00',gi:1.6,blimps:true},
  {name:'Şelale Vadisi',nature:'falls',traf:['car','bus'],tcol:['#ff2a2a','#ffd23f','#2f7bff','#ffffff'],fx:'coin',top:'#1767ff',hor:'#c4f1ff',bot:'#3fcf6a',gnd:'#4f9f44',leaf:['#17a845','#5fd03a'],house:['#ffffff'],roof:['#ff2a00'],mtn:'#5d8f4c',cap:'#f4f7ff'},
  {name:'Dağ Geçidi',nature:'mount',traf:['bus','car'],tcol:['#d62828','#fcbf49','#2a9d8f'],fx:'fuel',top:'#2a64d8',hor:'#dcecff',bot:'#8db07a',gnd:'#7fa860',leaf:['#2e7d32','#43a047'],house:['#ffffff'],roof:['#5b2a16'],mtn:'#7d746a',cap:'#ffffff'}
@@ -1495,6 +2259,21 @@ const BUILD={
   part(r,G.box,red,[0,2.1,.55],[4.2,.08,.9],[-.15,0,0]);for(const s of[-1,1])part(r,G.plane,starM,[s*1.4,2.16,.55],[.6,.6,1],[-PI/2-.15,0,0]);
   const pr2=new THREE.Group();pr2.position.set(0,1.3,-.48);part(pr2,G.box,cr,[0,0,0],[1.3,.12,.04]);r.add(pr2);r.userData.spinZ=[pr2];
   return{veh:v,rob:r};},
+
+ tork(){
+  const v=new THREE.Group(),pa=mat('#2f86e0',{metalness:.55,roughness:.16}),blk=mat('#14171c',{roughness:.5}),dk=mat('#0b1424',{roughness:.05,metalness:.4}),sil=mat('#c9d2de',{metalness:.85,roughness:.2}),wl=glowMat('#e8fbff'),rl=glowMat('#ff2a2a'),cy=glowMat('#3fe6ff');
+  part(v,G.box,pa,[0,-.08,0],[2.1,.62,4.5]);part(v,G.sph,pa,[0,.14,-1.25],[1.02,.3,1.25]);part(v,G.sph,pa,[0,.2,1.75],[1.02,.34,.75]);
+  part(v,G.sph,dk,[0,.5,.4],[.98,.42,1.55]);part(v,G.box,pa,[0,.83,.45],[1.62,.07,2.0]);
+  for(const s of[-1,1]){part(v,G.box,sil,[s*.84,.9,.45],[.05,.05,1.9]);part(v,G.box,sil,[s*1.02,.42,.35],[.03,.04,1.7]);
+    part(v,G.box,blk,[s*1.06,-.3,0],[.07,.2,3.8]);part(v,G.sphL,wl,[s*.78,.1,-2.24],[.34,.07,.06]);part(v,G.sphL,rl,[s*.8,.32,2.27],[.3,.05,.05]);
+    part(v,G.box,pa,[s*1.02,.1,-.1],[.06,.3,1.0]);part(v,G.box,blk,[s*1.12,.5,-.6],[.1,.1,.2]);
+    for(const z of[-1.5,1.45]){part(v,G.cyl,blk,[s*.98,-.42,z],[.74,.3,.74],[0,0,PI/2]);part(v,G.cyl,sil,[s*1.1,-.42,z],[.46,.05,.46],[0,0,PI/2]);part(v,G.box,cy,[s*1.14,-.42,z],[.03,.28,.07],[0,0,0]);}}
+  part(v,G.box,blk,[0,-.02,-2.26],[1.3,.26,.05]);part(v,G.box,blk,[0,-.3,-2.28],[1.9,.18,.18]);part(v,G.box,wl,[0,.07,-2.25],[1.7,.03,.03]);part(v,G.box,rl,[0,.34,2.26],[1.7,.04,.04]);
+  part(v,G.box,sil,[0,-.04,-2.29],[.3,.12,.02]);part(v,G.box,blk,[0,-.3,2.3],[1.8,.2,.15]);
+  part(v,G.under,M.under,[0,-.45,0],[1.7,2.9,1],[-PI/2,0,0]);J(v,[-.55,-.05,2.35]);J(v,[.55,-.05,2.35]);
+  const r=new THREE.Group();humanoid(r,{torso:'#2f86e0',chest:'#c9d2de',waist:'#14171c',head:'#2f86e0',visor:'#3fe6ff',shoulder:'#2f86e0',arm:'#c9d2de',hand:'#14171c',thigh:'#2f86e0',knee:'#c9d2de',shin:'#2f86e0',boot:'#14171c'});
+  part(r,G.box,pa,[0,1.6,.5],[1.0,.7,.25]);part(r,G.box,wl,[0,1.9,.64],[.8,.05,.03]);part(r,G.box,sil,[0,2.0,-.15],[.6,.05,.5]);
+  return{veh:v,rob:r};},
  ejder(){
   const v=new THREE.Group(),r=new THREE.Group(),em=mat('#0f9d58',{metalness:.45}),gd=mat('#e0b030',{metalness:.8,roughness:.2}),dk=mat('#1d2b33',{metalness:.5});
   part(v,G.sph,em,[0,0,0],[.9,.6,2.4]);part(v,G.box,dk,[0,.45,0],[.3,.2,3.4]);
@@ -1675,7 +2454,7 @@ function charModel(id){const r=id==='pilot'?buildPilot():id==='stick'?buildStick
   const jet=[G.thr,G.disc,G.flame];
   for(const ch of[...r.children]){const keep=id==='silgi'?Array.isArray(ch.material):!jet.includes(ch.geometry);if(!keep)r.remove(ch);}
   r.userData.flames=[];return r;}
-const SEAT={altin:[0,.5,.45],buzjet:[0,.42,-1.05],kanat:[0,.42,.35],turbo:[0,.62,.45],komutan:[-.5,.95,.25],roket:[0,1.15,.35],donusum:[0,.5,.4],jet:[0,.8,-.3],sovalye:[0,.42,-.3],ejder:[0,.72,-.7]};
+const SEAT={altin:[0,.5,.45],buzjet:[0,.42,-1.05],kanat:[0,.42,.35],turbo:[0,.62,.45],komutan:[-.5,.95,.25],roket:[0,1.15,.35],donusum:[0,.5,.4],jet:[0,.8,-.3],sovalye:[0,.42,-.3],ejder:[0,.72,-.7],tork:[0,.62,.4]};
 // where accessories sit on each character (model-local units)
 const ANCH={stick:{hc:2.2,hw:.5,top:2.72,fz:-.46,ey:2.27,ty:1.05,tw:.45,th:1.1,td:.3,ny:1.72},astro:{hc:2.15,hw:.8,top:2.85,fz:-.66,ey:2.15,ty:1.15,tw:1.25,th:1.1,td:.92,ny:1.55},
   pilot:{hc:2.32,hw:.62,top:3.0,fz:-.6,ey:2.34,ty:1.25,tw:1.25,th:1.1,td:.85,ny:1.9},
@@ -1785,7 +2564,7 @@ function transformNow(){
   popup(form==='rob'?'ROBOT MODU!':'ARAÇ MODU!','big2');if(form==='rob'&&state==='race'){track('transform');if(spawnRoadZep(carD+120)){nextZepR=Math.max(genD,carD+120)+rnd(400,550);popup('🎈 İLERİDE ZEPLİN VAR · BİN!');}}
   const fl=$('#flash');fl.classList.remove('on');void fl.offsetWidth;fl.classList.add('on');
   $('#hForm').textContent=form==='rob'?'ROBOT · YÜRÜ':'ARAÇ';
-  if(form==='rob'){alt=0;altT=0;robU=carU;popup('PARMAĞINLA SERBESTÇE YÜRÜ · YUKARI = ZIPLA');}else{lane=Math.max(-1,Math.min(1,Math.round(carU/LANE)));jumpY=0;jumpV=0;}
+  if(form==='rob'){alt=0;altT=0;robU=carU;popup('PARMAĞINLA SERBESTÇE YÜRÜ · YUKARI = ZIPLA · TURBO BASILI TUT = UÇ');}else{lane=Math.max(-1,Math.min(1,Math.round(carU/LANE)));jumpY=0;jumpV=0;}
 }
 function animTransform(dt){
   tfxUpdate(RDT||dt);
@@ -1889,7 +2668,7 @@ function bannerDraw(x,w,h,text,sub){x.fillStyle='#0c1838';x.fillRect(0,0,w,h);
   if(sub){x.font='900 18px Nunito, sans-serif';x.fillStyle='#41f0ff';x.fillText(sub,w/2,16);}}
 function bannerJunction(x,w,h,opts){x.fillStyle='#0c1838';x.fillRect(0,0,w,h);const ar=['◀','▲','▶'],bg=['#16803a','#1e5fd0','#16803a'];
   for(let i=0;i<3;i++){const x0=i*w/3,cx=x0+w/6;x.fillStyle=bg[i];x.fillRect(x0+6,6,w/3-12,h-12);x.fillStyle='#fff';x.textAlign='center';x.textBaseline='middle';
-    x.font='38px Bungee, Impact, sans-serif';x.fillText(ar[i],cx,30);let fs=30;const nm=opts[i].name.toUpperCase();x.font=fs+'px Bungee, Impact, sans-serif';while(x.measureText(nm).width>w/3-30&&fs>14){fs-=2;x.font=fs+'px Bungee, Impact, sans-serif';}
+    x.font='38px Bungee, Impact, sans-serif';x.fillText(ar[i],cx,30);let fs=30;const nm=rnm(opts[i]).toUpperCase();x.font=fs+'px Bungee, Impact, sans-serif';while(x.measureText(nm).width>w/3-30&&fs>14){fs-=2;x.font=fs+'px Bungee, Impact, sans-serif';}
     x.fillText(nm,cx,72);x.font='900 18px Nunito, sans-serif';x.fillStyle='#ffd84a';x.fillText(FEAT[opts[i].fx],cx,106);}}
 function bannerTex(text,sub){return tex(1024,128,(x,w,h)=>bannerDraw(x,w,h,text,sub));}
 function blimpTex(){return tex(256,1024,(x,w,h)=>{x.fillStyle='#fff8ea';x.fillRect(0,0,w,h);x.fillStyle='#ff2a2a';x.fillRect(0,0,22,h);x.fillRect(w-22,0,22,h);x.fillStyle='#0062ff';x.fillRect(26,0,8,h);x.fillRect(w-34,0,8,h);
@@ -2085,6 +2864,8 @@ let rainbow=null,rb=null;
 const carPool=[],busPool=[],saucerPool=[],coinPool=[],ringPool=[],shieldPool=[],fuelPool=[],portalPool=[],boltPool=[],crysPool=[];let bubble=null,ghosts=[];const roadGhostMats=[];
 let nextTunnel=900,nextTowerE=1500,tGates=[],blockLane=null,tunIn=0;const keyPool=[],rockPool=[],towerEPool=[],TL=480;
 const inTunnel=d=>tunnels.some(t=>d>=t.d0&&d<t.d1);
+const inRb=(d,m)=>!!(rb&&((rb.d0&&d>rb.d0-m&&d<rb.d0+RBL+m)||(rb.pending&&d>rb.pending-m&&d<rb.pending+RBL+m)));
+const tunNear=(a,b)=>tunnels.some(t=>t.d1>a&&t.d0<b);
 let TUNM=null,NATM=null;
 // dağ konisi: kenarları çentikli (yalnız içe doğru), köşe renginde taban koyu / tabaka bantları / tepe açık
 let _MTG=null;function mtnGeo(){if(_MTG)return _MTG;const g=new THREE.ConeGeometry(1,1,10,6,false),p=g.attributes.position,n=p.count,col=new Float32Array(n*3);
@@ -2105,7 +2886,7 @@ const TRAFFIC=['#00d1b2','#ffcc00','#2f7bff','#a23cff','#ff7a00','#ff2fa0','#e53
 function makeFuelBox(){const g=new THREE.Group();const fm=new THREE.MeshStandardMaterial({map:fuelTex,emissiveMap:fuelTex,emissive:0xffffff,emissiveIntensity:.9,roughness:.4});
   part(g,G.box,fm,[0,0,0],[1.5,1.5,1.5]);part(g,G.sphL,M.halo,[0,0,0],[1.6,1.6,1.6]);g.visible=false;scene.add(g);return g;}
 function makePortal(){const g=new THREE.Group();
-  const ring=new THREE.Mesh(new THREE.TorusGeometry(3.3,.32,12,64),M.portal);g.add(ring);
+  const ring=new THREE.Group();[[3.62,'#ff2a2a'],[3.4,'#ff9a00'],[3.18,'#ffe83a'],[2.96,'#38e05a'],[2.74,'#2f9bff'],[2.52,'#a24dff']].forEach(([r,c])=>{const k=new THREE.Color(c).multiplyScalar(1.5);ring.add(new THREE.Mesh(new THREE.TorusGeometry(r,.13,10,72),new THREE.MeshBasicMaterial({color:k,toneMapped:false})));});g.add(ring);
   const ring2=new THREE.Mesh(new THREE.TorusGeometry(3.7,.08,8,64),M.ring);g.add(ring2);
   const disc=new THREE.Mesh(new THREE.CircleGeometry(3.2,48),new THREE.MeshBasicMaterial({map:portalTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));g.add(disc);g.userData.disc=disc;
   g.visible=false;scene.add(g);return g;}
@@ -2140,19 +2921,37 @@ function makeTGate(){const g=new THREE.Group(),rt=rockTex.clone();rt.repeat.set(
   g.visible=false;scene.add(g);return g;}
 function placeTGate(d0,d1){const [a,b]=tGates;placeAt(a,d0,0);a.position.y=roadH(d0-.01);a.visible=true;a.userData.sign.visible=true;
   placeAt(b,d1,0);b.rotation.y+=PI;b.position.y=0;b.visible=true;b.userData.sign.visible=false;}
+const TWH=84;
 function makeTowerE(){const g=new THREE.Group(),wm=new THREE.MeshStandardMaterial({color:C('#f4f1ff'),metalness:.25,roughness:.3}),pm=new THREE.MeshStandardMaterial({color:C('#7a3cff'),emissive:C('#7a3cff'),emissiveIntensity:.7,metalness:.4,roughness:.25});
-  part(g,G.cyl,wm,[0,18,0],[4.4,36,4.4]);for(let y=6;y<34;y+=6)part(g,new THREE.TorusGeometry(4.5,.3,8,32),pm,[0,y,0],[1,1,1],[PI/2,0,0]);
-  part(g,G.sph,pm,[0,37,0],[5.4,3.2,5.4]);part(g,G.cyl,M.chrome,[0,43,0],[.2,9,.2]);const bc=part(g,G.sphL,new THREE.MeshBasicMaterial({color:new THREE.Color(3,.4,2.6)}),[0,47.8,0],[.8,.8,.8]);g.userData.beacon=bc;
+  part(g,G.cyl,wm,[0,TWH/2,0],[4.4,TWH,4.4]);for(let y=6;y<TWH-2;y+=7)part(g,new THREE.TorusGeometry(4.5,.3,8,32),pm,[0,y,0],[1,1,1],[PI/2,0,0]);
+  part(g,G.sph,pm,[0,TWH+1,0],[5.4,3.2,5.4]);part(g,G.cyl,M.chrome,[0,TWH+7,0],[.2,9,.2]);const bc=part(g,G.sphL,new THREE.MeshBasicMaterial({color:new THREE.Color(3,.4,2.6)}),[0,TWH+11.8,0],[.8,.8,.8]);g.userData.beacon=bc;g.userData.wm=wm;
   part(g,G.box,mat('#2a1060'),[0,3.2,3.9],[5.6,6.4,1.4]);
   const disc=new THREE.Mesh(new THREE.CircleGeometry(2.3,40),new THREE.MeshBasicMaterial({map:portalTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));disc.position.set(0,3,4.65);g.add(disc);g.userData.disc=disc;
   part(g,new THREE.TorusGeometry(2.7,.28,10,40),M.portal,[0,3,4.66],[1,1.15,1]);
   const sg=new THREE.Mesh(G.plane,new THREE.MeshBasicMaterial({map:signTex('IŞINLANMA KULESİ · +20 💎','#7a3cff')}));sg.scale.set(9,2.2,1);sg.position.set(0,8.6,4.7);g.add(sg);
   g.visible=false;scene.add(g);return g;}
-function enterTower(o){o.hit=true;o.done=true;track('tower');addXP(15);const w=pick(WORLDS.filter(x=>x!==TH));gems+=20;saveGarage();setTheme(w);
-  for(const sg of segs)if(sg.userData.D0>carD-SEG*2)placeSeg(sg,sg.userData.D0);
-  zoneIdx++;H.zone.textContent='BÖLGE '+(zoneIdx+1)+' · '+w.name.toUpperCase();inv=Math.max(inv,2);
+// kule: asansörle zirveye çık -> zirveden hızlı uçuş (yanda uçan arabalar) -> iniş
+let tw=null,liftG=null;const rkM=[new THREE.MeshBasicMaterial({color:new THREE.Color(2.4,1.0,.25),transparent:true,opacity:.85,blending:THREE.AdditiveBlending,depthWrite:false}),new THREE.MeshBasicMaterial({color:new THREE.Color(2.6,2.4,1.8),transparent:true,opacity:.95,blending:THREE.AdditiveBlending,depthWrite:false})],rkG=[new THREE.ConeGeometry(.42,3.6,10,1,true).rotateX(PI/2).translate(0,0,1.8),new THREE.ConeGeometry(.2,2.3,8,1,true).rotateX(PI/2).translate(0,0,1.15)];
+function addRocket(m){if(m.userData.rk)return;const L=(m.userData.len||4.5)/2,r=new THREE.Group();for(const sx of[-.55,.55]){for(let i=0;i<2;i++){const f=new THREE.Mesh(rkG[i],rkM[i]);f.position.set(sx,-.55,L+.1);r.add(f);}}r.visible=false;m.add(r);m.userData.rk=r;}
+function twGlass(on){for(const t of towerEPool){const w=t.userData.wm;if(w){w.transparent=on;w.opacity=on?.2:1;w.depthWrite=!on;w.needsUpdate=true;}}}
+function twClear(){twGlass(false);tw=null;if(liftG)liftG.visible=false;}
+function mkLift(){const g=new THREE.Group(),pl=new THREE.MeshStandardMaterial({color:C('#bfe9ff'),emissive:C('#2fc8ff'),emissiveIntensity:.8,metalness:.5,roughness:.25});
+  part(g,G.cyl,pl,[0,0,0],[3.6,.3,3.6]);part(g,new THREE.TorusGeometry(3.7,.14,8,32),M.chrome,[0,.2,0],[1,1,1],[PI/2,0,0]);
+  for(let i=0;i<4;i++){const a=i*PI/2+PI/4;part(g,G.cyl,M.chrome,[Math.cos(a)*3.5,2.4,Math.sin(a)*3.5],[.1,4.8,.1]);}
+  part(g,new THREE.TorusGeometry(3.7,.14,8,32),M.chrome,[0,4.8,0],[1,1,1],[PI/2,0,0]);
+  const gl=new THREE.Mesh(new THREE.CylinderGeometry(3.6,3.6,4.8,24,1,true),new THREE.MeshBasicMaterial({color:C('#8fe3ff'),transparent:true,opacity:.14,side:THREE.DoubleSide,depthWrite:false}));gl.position.y=2.4;g.add(gl);
+  const sh=new THREE.Mesh(new THREE.CylinderGeometry(3.2,3.2,1,20,1,true),new THREE.MeshBasicMaterial({color:new THREE.Color(.5,1.6,2.2),transparent:true,opacity:.22,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));g.add(sh);g.userData.sh=sh;
+  g.visible=false;scene.add(g);return g;}
+function twTop(){const w=tw.w;setTheme(w);for(const sg of segs)if(sg.userData.D0>carD-SEG*2)placeSeg(sg,sg.userData.D0);
+  zoneIdx++;H.zone.textContent='BÖLGE '+(zoneIdx+1)+' · '+w.name.toUpperCase();
   const fl=$('#flash');fl.classList.remove('on');void fl.offsetWidth;fl.classList.add('on');burstT=.6;burstM.visible=true;
-  sfx.zone();sfx.boost();popup('KULEYE GİRDİN! IŞINLANDIN','big2');popup('+20 💎 · '+w.name.toUpperCase());}
+  sfx.zone();sfx.boost();popup('ZİRVEDEN UÇUŞ! 🚀','big2');popup(w.name.toUpperCase());
+  if(liftG)liftG.visible=false;
+  tw.comp=[];}
+function twEnd(){const n=tw;twGlass(false);tw=null;inv=Math.max(inv,3.5);if(n)for(const c of n.comp){c.m.visible=false;if(c.m.userData.rk)c.m.userData.rk.visible=false;}jumpY=0;jumpV=0;coins+=40;sfx.coin();popup('İNİŞ! +40 🪙','big2');}
+function enterTower(o){o.hit=true;track('tower');addXP(15);gems+=20;saveGarage();
+  tw={st:'lift',t:0,LT:3.8,FT:4.2,w:pick(WORLDS.filter(x=>x!==TH)),comp:[],lane:lane,u:robU,top:TWH-4};inv=Math.max(inv,99);speed=0;jumpV=0;
+  if(!liftG)liftG=mkLift();liftG.visible=true;twGlass(true);sfx.boost();popup('ASANSÖR ZİRVEYE ÇIKIYOR! +20 💎','big2');}
 // hub: ılık renk ısısı (güneş, ufuk, gökyüzü sisi biraz sıcak) - her setTheme'den sonra yeniden uygulanır
 function hubWarm(){if(!worldG||!worldG.visible)return;sun.color.lerp(C('#ffd49a'),.3);hemi.color.lerp(C('#ffe9c8'),.3);hemi.groundColor.lerp(C('#a07a3a'),.2);skyU.hor.value.lerp(C('#ffe6bf'),.2);scene.fog.color.lerp(new THREE.Color('#ffe6bf'),.2);}
 function setTheme(t){
@@ -2312,7 +3111,7 @@ function countShow(txt,go){const el=$('#count');el.innerHTML=`<span class="${go?
 
 const diffK=()=>COURSE?COURSE.k:1-Math.exp(-carD/9000);
 const baseSpeed=()=>(40+55*diffK())*(TH.fx==='speed'?1.12:1);
-const formSpd=()=>form==='rob'?.82:1.05;
+const formSpd=()=>form==='rob'?1.15:1.32;
 let robU=0,jumpY=0,jumpV=0,walkPh=0,keyL=0,keyR=0;const ROBW=LANE+2.2;
 const robMode=()=>form==='rob'&&state==='race'&&!(rb&&rb.stage==='ride');
 const magnet=()=>stat.mag*(form==='rob'?1.5:1);
@@ -2325,6 +3124,7 @@ function spawn(o){
   const pool=o.t==='car'?{car:carPool,bus:busPool,saucer:saucerPool,rock:rockPool}[o.kind||'car']:{orb:orbPool,key:keyPool,tower:towerEPool,zepr:zepRPool,coin:coinPool,shield:shieldPool,fuel:fuelPool,portal:portalPool,bolt:boltPool,crystal:crysPool,ring:ringPool}[o.t];
   const fr=pool.filter(p=>!p.visible),m=fr[Math.floor(Math.random()*fr.length)];if(!m)return;
   if(o.t==='car'&&m.userData.gr)o.alt=0;
+  if(o.t==='car'){if(o.fly&&o.kind==='car'){o.alt=1;addRocket(m);}else o.fly=false;if(m.userData.rk)m.userData.rk.visible=!!o.fly;}
   m.visible=true;o.m=m;o.u=o.lane*LANE;o.y=ALT[o.alt||0];o.vz=o.vz||0;o.ph=Math.random()*6;o.len=m.userData.len||(o.kind==='bus'?6:o.kind==='saucer'?4:o.kind==='rock'?3:4.6);if(o.t==='car'&&m.userData.paint&&!m.userData.fixed)m.userData.paint.color=C(o.kind==='bus'?pick(BUSC):pick(Math.random()<.4?TNEU:TH.tcol));active.push(o);return o;
 }
 // trafik engellerden kaçar: tünel taşları, gökkuşağı yolu, kuleler, zeplinler
@@ -2344,11 +3144,11 @@ function carAvoid(o,dt){o.ac=(o.ac||0)-dt;if(o.ac>0)return;o.ac=.12;
 function generate(limit){
   while(genD<limit){
     const k=diffK(),d=genD,fx=TH.fx;
-    if(d>=nextTunnel){const d0=Math.ceil((d+80)/SEG)*SEG,d1=d0+TL,near=x=>x&&x>d0-320&&x<d1+260;
+    if(d>=nextTunnel&&!tw){const d0=Math.ceil((d+80)/SEG)*SEG,d1=d0+TL,near=x=>x&&x>d0-320&&x<d1+260;
       const bad=near(jn&&jn.J)||forks.some(f=>near(f.J))||(rb&&[rb.pending,rb.d0].some(x=>x&&x>d0-TPRE-RBL-80&&x<d1+120))||(COURSE&&d1>COURSE.len-60);
       if(!bad){tunnels=tunnels.filter(t=>t.d1>carD-200);tunnels.push({d0,d1});for(const sg of segs)if(sg.userData.D0>=d0-TPRE-SEG&&sg.userData.D0<d1+SEG)placeSeg(sg,sg.userData.D0);placeTGate(d0,d1);}
       nextTunnel=d+(bad?rnd(160,260):rnd(1000,1500));}
-    if(d>=nextTowerE){const td=d+40;if(!inTunnel(td)&&!inTunnel(td+60)&&!(jn&&Math.abs(jn.J-td)<220)&&!(COURSE&&td>COURSE.len-80)){const ln=pick([-1,0,1]);blockLane={lane:ln,d0:td-220,d1:td+40};for(let i=active.length-1;i>=0;i--){const c=active[i];if(c.t==='car'&&c.lane===ln&&c.d>td-240&&c.d<td+40){c.m.visible=false;active.splice(i,1);}}spawn({t:'tower',lane:ln,d:td,alt:0});}nextTowerE=d+rnd(1300,1900);}
+    if(d>=nextTowerE){const td=d+40;if(!inTunnel(td)&&!inTunnel(td+60)&&!inRb(td,160)&&!(jn&&Math.abs(jn.J-td)<220)&&!(COURSE&&td>COURSE.len-80)){const ln=pick([-1,0,1]);blockLane={lane:ln,d0:td-220,d1:td+40};for(let i=active.length-1;i>=0;i--){const c=active[i];if(c.t==='car'&&c.lane===ln&&c.d>td-240&&c.d<td+40){c.m.visible=false;active.splice(i,1);}}spawn({t:'tower',lane:ln,d:td,alt:0});}nextTowerE=d+rnd(1300,1900);}
     if(form==='rob'&&d>=nextZepR&&carD>60){if(spawnRoadZep(d+40))nextZepR=d+rnd(450,650);else nextZepR=d+60;}
     if(d>=nextPortal){spawn({t:'portal',lane:pick([-1,0,1]),d:d+30,alt:1});noHiUntil=d+90;nextPortal+=rnd(620,880);}
     if(d>=nextKey){if(!inTunnel(d+12))spawn({t:'key',lane:pick([-1,0,1]),d:d+12,alt:Math.random()<.35?1:0});nextKey+=rnd(420,620);}
@@ -2360,7 +3160,7 @@ function generate(limit){
       const nb=Math.random()<.62*k?2:1;
       const hi=d>noHiUntil&&k>.12&&Math.random()<.45*k?1:0;
       if(inTunnel(d)){const nr=Math.random()<.5+.3*k?2:1;for(let i=0;i<nr;i++)spawn({t:'car',kind:'rock',lane:lanes[i],d:d+(i?rnd(4,14):0),alt:0,vz:0,fall:Math.random()<.55});}
-      else for(let i=0;i<nb;i++)spawn({t:'car',lane:lanes[i],d:d+(i?rnd(0,8):0),alt:0,weave:nb===1&&k>.18&&Math.random()<.45*k,vz:rnd(8,18)});
+      else for(let i=0;i<nb;i++)spawn({t:'car',lane:lanes[i],d:d+(i?rnd(0,8):0),alt:0,weave:nb===1&&k>.18&&Math.random()<.45*k,vz:rnd(8,18),fly:k>.22&&Math.random()<Math.min(.4,(k-.2)*.9)});
       if(Math.random()<(fx==='coin'?.97:.7)){const fl=lanes[2],ca=Math.random()<.3?1:0;for(let j=0;j<(fx==='coin'?6:4);j++)spawn({t:'coin',lane:fl,d:d-10+j*5,alt:ca});}
       if(Math.random()<.3)spawn({t:'coin',lane:lanes[0],d:d,alt:1});
     }
@@ -2369,7 +3169,7 @@ function generate(limit){
     genD+=Math.max(26,(baseSpeed()-13)*(1.75-1.2*k)*rnd(.85,1.2)*(fx==='speed'?.85:1));
   }
 }
-function clearActive(){active=[];[...orbPool,...keyPool,...rockPool,...towerEPool,...carPool,...busPool,...saucerPool,...coinPool,...ringPool,...shieldPool,...fuelPool,...portalPool,...boltPool,...crysPool].forEach(m=>m.visible=false);}
+function clearActive(){twClear();[...carPool,...saucerPool].forEach(m=>{if(m.userData.rk)m.userData.rk.visible=false;});active=[];[...orbPool,...keyPool,...rockPool,...towerEPool,...carPool,...busPool,...saucerPool,...coinPool,...ringPool,...shieldPool,...fuelPool,...portalPool,...boltPool,...crysPool].forEach(m=>m.visible=false);}
 function resetWorld(){
   segs.forEach((s,i)=>placeSeg(s,i*SEG-60));
   towers.forEach((t,i)=>placeTower(t,i*150+rnd(-30,30)));
@@ -2402,8 +3202,8 @@ function decideJunction(){
   const dir=lane,t=jn.opts[dir+1];forks.push({J:jn.J,dir});jn.stage='decided';
   setTheme(t);for(const s of segs)if(s.userData.D0>=jn.J-SEG)placeSeg(s,s.userData.D0);
   ghosts[dir+1].forEach(g=>g.visible=false);
-  zoneIdx++;H.zone.textContent='BÖLGE '+(zoneIdx+1)+' · '+t.name.toUpperCase();
-  popup((dir<0?'◀ ':dir>0?'▶ ':'▲ ')+t.name.toUpperCase(),'big2');popup(FEAT[t.fx]);sfx.zone();show('#junc',false);
+  zoneIdx++;H.zone.textContent='BÖLGE '+(zoneIdx+1)+' · '+rnm(t).toUpperCase();
+  popup((dir<0?'◀ ':dir>0?'▶ ':'▲ ')+rnm(t).toUpperCase(),'big2');popup(FEAT[t.fx]);sfx.zone();show('#junc',false);
   genD=Math.max(genD,jn.J+70);jn.hideAt=jn.J+340;if(Math.random()<.6)rb={pending:jn.J+370};
 }
 function resetScene(){clearRainbow();zoneIdx=0;forks=[];setTheme(THEMES[0]);carD=0;setupJunction(J0);resetWorld();placeAt(startGate,16,0);lamps.forEach(l=>{l.material.color.set(0x222222);l.material.emissive.set(0x000000);});}
@@ -2416,7 +3216,7 @@ function startRun(cn){
   zoneIdx=0;forks=[];setTheme(THEMES[0]);
   robU=0;jumpY=0;jumpV=0;keyL=keyR=0;
   stat=combo();setVehicle(selId,'veh',false);$('#hForm').textContent='ARAÇ';
-  carD=0;carU=0;vx=0;lane=0;alt=0;altT=0;carY=ALT[0];vy=0;speed=0;boostF=0;burst=0;burstFree=false;holding=false;
+  carD=0;carU=0;vx=0;lane=0;alt=0;altT=0;carY=ALT[0];vy=0;speed=0;boostF=0;burst=0;burstFree=false;holding=false;twClear();
   maxH=stat.armor;fuel=100;coins=0;hearts=maxH;inv=0;shake=0;slow=0;shield=false;runTime=0;lowWarned=0;warnT=0;bankedAmt=0;
   forks=[];clearRainbow();rb=COURSE?null:{pending:430};setupJunction(COURSE?1e9:J0);genD=40;nextRing=380;nextShield=1200;nextFuel=260;nextPortal=420;nextKey=350;nextZepR=0;if(typeof endBoss==='function'){endBoss();nextBoss=COURSE?1e9:2200;}keys=0;keysGot=0;keyUI();nextTunnel=COURSE?500:900;nextTowerE=COURSE?700:1500;tunnels=[];blockLane=null;tunIn=0;tGates.forEach(g=>g.visible=false);nextBolt=150;nextCrys=550;turbo=0;noHiUntil=0;
   resetWorld();clearActive();bubble.visible=false;$('#pops').innerHTML='';
@@ -2516,7 +3316,7 @@ function closeRunGarage(){
   $('#hForm').textContent=form==='rob'?'ROBOT':'ARAÇ';show('#hud',true);if(jn&&jn.warned&&jn.stage==='shown')show('#junc',true);
   inv=1.5;state='race';popup(stat.name.toUpperCase()+' HAZIR!');}
 $('#garageBtn').onclick=openGarage;$('#rGarage').onclick=openGarage;$('#garFix').onclick=openGarage;
-$('#hGar').onclick=openRunGarage;$('#pGar').onclick=openRunGarage;$('#pSnd').onclick=()=>{aInit();setSound(!AU.on);$('#pSnd').textContent=AU.on?'Ses: Açık':'Ses: Kapalı';};
+$('#hGar').onclick=openRunGarage;{let _mt=0;const mb=$('#hMenu');mb.onclick=()=>{if(AU.ctx)AU.ctx.resume();if(_mt){clearTimeout(_mt);_mt=0;mb.textContent='⌂ ANA MENÜ';toMenu();return;}mb.textContent='EMİN MİSİN?';_mt=setTimeout(()=>{_mt=0;mb.textContent='⌂ ANA MENÜ';},2500);};}$('#pGar').onclick=openRunGarage;$('#pSnd').onclick=()=>{aInit();setSound(!AU.on);$('#pSnd').textContent=AU.on?'Ses: Açık':'Ses: Kapalı';};
 $('#gBack').onclick=()=>{if(gEquipPreview){gEquipPreview=null;refreshAcc();}if(state==='pgarage'){closeRunGarage();return;}if(garageFrom==='world'){garageFrom=null;show('#garage',false);showChar(null);enterWorld();return;}show('#garage',false);showChar(null);inv=0;setVehicle(selId,'veh');menuInfo();show('#menu',true);state='menu';showChar(selC);};
 $('#gBack2').onclick=()=>$('#gBack').onclick();
 $('#gPrev').onclick=()=>{if(gTab==='acc')aIdx=(aIdx+ACCS.length-1)%ACCS.length;else if(gTab==='char')cIdx=(cIdx+CHARS.length-1)%CHARS.length;else{gIdx=(gIdx+ROSTER.length-1)%ROSTER.length;gForm='veh';}garageRender();};
@@ -2552,6 +3352,15 @@ $('#pauseBtn').onclick=()=>{if(state!=='race'&&state!=='count')return;state='pau
 $('#resumeBtn').onclick=()=>{state=state.split(':')[1]||'race';show('#pause',false);if(AU.ctx)AU.ctx.resume();if(musicOK)musicEl.play().catch(()=>{});};
 $('#restartBtn').onclick=()=>{if(AU.ctx)AU.ctx.resume();startRun();};
 $('#quitBtn').onclick=()=>{if(AU.ctx)AU.ctx.resume();toMenu();};
+// Android geri tuşu: yarışta duraklat, duraklamada devam, diğer ekranlarda geri/menü; false = uygulamadan çık
+window.__back=function(){try{
+  if(!$('#quiz').hidden){qzClose();return true;}
+  if(state==='race'||state==='count'){$('#pauseBtn').onclick();return true;}
+  if(String(state).startsWith('paused')){if(!$('#pause').hidden)$('#resumeBtn').onclick();return true;}
+  if(state==='garage'||state==='pgarage'){$('#gBack').onclick();return true;}
+  if(state==='wpanel'||state==='world'){$('#wBack').onclick();return true;}
+  if(state==='over'||state==='result'){toMenu();return true;}
+}catch(e){}return false;};
 $('#sndBtn').onclick=()=>{aInit();setSound(!AU.on);};
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='pgarage')return;if(document.hidden&&(state==='race'||state==='count'))$('#pauseBtn').onclick();});
 
@@ -2619,29 +3428,31 @@ function update(dt){
     if(burst>0)burst-=dt;else burstFree=false;
     const want=(holding||burst>0)&&fuel>0&&(turbo>0||burstFree);
     if(want&&!burstFree){turbo=Math.max(0,turbo-dt);if(turbo===0){burst=0;popup('TURBO BİTTİ');}}
-    tgtB=want?1:0;
+    tgtB=want?1:0;if(tw&&tw.st==='fly')tgtB=1;
+    if(tw){tw.t+=dt;if(tw.st==='lift'){speed=0;lane=tw.lane;robU=tw.u;if(tw.t>=tw.LT){tw.st='fly';tw.t=0;twTop();}}else{if(tw.t/tw.FT>.22&&tw.t/tw.FT<.3&&tunNear(carD-40,carD+460))tw.t-=dt;else if(tw.t>=tw.FT)twEnd();}}
     slow=Math.max(0,slow-dt);inv=Math.max(0,inv-dt);
-    const drain=(1.05+.7*diffK())*(want&&!burstFree?2.6:1)/stat.eco;
+    const drain=tw?0:(1.05+.7*diffK())*(want&&!burstFree?2.6:1)/stat.eco;
     fuel=Math.max(0,fuel-drain*dt);
     if(fuel<25&&lowWarned<1){lowWarned=1;popup('YAKIT AZ! YAKIT KUTUSU TOPLA','warn');sfx.warn();}
     if(fuel<10&&lowWarned<2){lowWarned=2;popup('YAKIT BİTMEK ÜZERE!','warn');sfx.warn();}
     if(fuel>=30)lowWarned=0;
     if(fuel<25&&fuel>0){warnT-=dt;if(warnT<=0){warnT=2.5;sfx.warn();}}
     const jd=jn.stage==='shown'?jn.J-carD:999,jSlow=jd<280?.55+.45*Math.max(0,(jd-60)/220):1;
-    let tv=baseSpeed()*stat.spd*formSpd()*(1+.75*boostF)*(slow>0?.55:1)*jSlow;
+    let tv=baseSpeed()*stat.spd*formSpd()*(1+.75*boostF)*(slow>0?.55:1)*jSlow*(tw&&tw.st==='fly'?1.45:1);
+    if(tw&&tw.st==='lift')tv=0;
     if(fuel<=0){tv=0;if(speed<4)gameOver('fuel');}
     speed+=(tv-speed)*Math.min(1,dt*2.2);
     const prevD=carD;carD+=speed*dt;
-    if(rb&&rb.pending&&carD>rb.pending-300){const bt=tunnels.find(t=>rb.pending+RBL+60>t.d0-TPRE&&rb.pending-60<t.d1);if(bt)rb.pending=bt.d1+160;else placeRainbow(rb.pending);}
+    if(rb&&rb.pending&&carD>rb.pending-300){const bt=tunnels.find(t=>rb.pending+RBL+60>t.d0-TPRE&&rb.pending-60<t.d1);if(bt)rb.pending=bt.d1+160;else if(active.some(o=>(o.t==='tower'||o.t==='zepr')&&o.d>rb.pending-110&&o.d<rb.pending+RBL+110))rb.pending+=200;else placeRainbow(rb.pending);}
     if(rb&&rb.stage==='wait'){
       if(!rb.warned&&rb.d0-carD<260){rb.warned=true;popup('🌈 GÖKKUŞAĞI '+(rb.lane<0?'◀ SOL':rb.lane>0?'SAĞ ▶':'▲ ORTA')+' ŞERİTTE!','warn');}
-      if(prevD<rb.d0&&carD>=rb.d0){if(lane===rb.lane&&Math.abs(carU-rb.u)<3)rideRainbow();else rb.stage='missed';}}
+      if(prevD<rb.d0&&carD>=rb.d0){if(!tw&&lane===rb.lane&&Math.abs(carU-rb.u)<3)rideRainbow();else rb.stage='missed';}}
     if(rb&&rb.stage==='ride'){const t=(carD-rb.d0)/RBL;if(!rb.peak&&t>=.5){rb.peak=true;rainbowZone();}if(t>=1){rb.stage='done';vy=-2;inv=Math.max(inv,4);for(let i=active.length-1;i>=0;i--){const o=active[i];if(o.t==='car'&&o.d>carD-5&&o.d<carD+50&&Math.abs(o.u-carU)<3.5){o.m.visible=false;active.splice(i,1);}}popup('İNİŞ KORUMASI 4 SN');}}
     if(rb&&(rb.stage==='done'||rb.stage==='missed')&&carD>rb.d0+RBL+60)clearRainbow();
     if(COURSE&&carD>=COURSE.len){courseWin();}
     if(jn.stage==='far'&&jn.J-carD<640)showJunction();
     if(jn.stage==='shown'&&!jn.warned&&jn.J-carD<420){jn.warned=true;popup('KAVŞAK! ŞERİDİNİ SEÇ','warn');sfx.warn();
-      jn.opts.forEach((t,i)=>{$('#j'+i+' span').textContent=t.name;$('#j'+i+' em').textContent=FEAT[t.fx];});show('#junc',true);}
+      jn.opts.forEach((t,i)=>{$('#j'+i+' span').textContent=rnm(t);$('#j'+i+' em').textContent=FEAT[t.fx];});show('#junc',true);}
     if(jn.stage==='shown'&&carD>=jn.J)decideJunction();
     if(jn.stage==='decided'&&carD>jn.hideAt){ghosts.forEach(a=>a.forEach(g=>g.visible=false));zoneGate.visible=false;setupJunction(jn.J+JINT);}
     generate(Math.min(carD+340,jn.stage==='decided'?carD+340:jn.J-50));
@@ -2658,16 +3469,24 @@ function update(dt){
   const riding=rb&&rb.stage==='ride'&&(racing||String(state).startsWith('paused'));
   const walking=form==='rob'&&!riding&&(racing||state==='count');
   if(riding){const t=(carD-rb.d0)/RBL,ty=rbH(t)+(form==='rob'?.15:1.5)+Math.sin(T*3)*.15;carY+=(ty-carY)*Math.min(1,dt*12);vy=0;lane=rb.lane;robU=carU;}
-  else if(walking){if(racing){jumpV-=48*dt;jumpY=Math.max(0,jumpY+jumpV*dt);if(jumpY===0)jumpV=Math.max(0,jumpV);}const ty=.1+jumpY;carY+=(ty-carY)*Math.min(1,dt*(jumpY>0?30:10));vy=jumpV*.05;}
+  else if(walking){if(racing){if(tgtB>0){jumpV=0;jumpY+=(5.2-jumpY)*Math.min(1,dt*4);}else{jumpV-=(jumpY>1.5&&jumpV<=0?26:48)*dt;jumpY=Math.max(0,jumpY+jumpV*dt);if(jumpY===0)jumpV=Math.max(0,jumpV);}}const ty=.1+jumpY;carY+=(ty-carY)*Math.min(1,dt*(jumpY>0?30:10));vy=jumpV*.05;}
   else{const ay=(ALT[alt]-carY)*24-vy*8;vy+=ay*dt;carY+=vy*dt;}
   if(walking){if(racing){robU=Math.max(-ROBW,Math.min(ROBW,robU+(keyR-keyL)*16*dt));}const pu=carU;carU+=(robU-carU)*Math.min(1,dt*10);vx=(carU-pu)/Math.max(dt,1e-3)*.12;lane=Math.max(-1,Math.min(1,Math.round(carU/LANE)));}
   else{const ice=TH.fx==='ice'&&racing,ax=(lane*LANE-carU)*(ice?6:10)-vx*(ice?2.2:6);vx+=ax*dt;const vmax=LANE*(ice?2.2:1.8);vx=Math.max(-vmax,Math.min(vmax,vx));carU+=vx*dt;}
   if(riding){carU=rb.u+rbW((carD-rb.d0)/RBL);vx=0;}
+  if(tw){const g0=walking?.1:ALT[0],f=tw.st==='lift'?Math.min(1,tw.t/tw.LT):Math.min(1,tw.t/tw.FT);
+    if(tw.st==='lift')carY=g0+(tw.top-g0)*(f*f*(3-2*f));
+    else{const x=Math.max(0,Math.min(1,(f-.3)/.7)),sm=x*x*(3-2*x);carY=g0+(tw.top-g0)*(1-sm)+Math.sin(T*3)*.25*(1-sm);}
+    vy=0;if(walking){jumpY=5;jumpV=0;}if(tw.st==='lift')vx=0;}
   if(showcase){carD=0;carU=0;vx=0;alt=0;carY=ALT[0]+.4;vy=0;}
   if(walking&&racing)walkPh+=dt*(4+speed*.12);
   const step=walking?(jumpY>0?0:Math.abs(Math.sin(walkPh))*.18):0,hover=walking?step:Math.sin(T*2.4)*.08;
   P(carD,carU,_p);playerRoot.position.set(_p.x,carY+hover+roadH(carD),_p.z);
   {const ph=Math.max(0,carY+hover-ALT[0]),sm=walking?.55:1;pShadow.visible=racing;pShadow.position.set(_p.x,roadH(carD)+.035,_p.z);pShadow.rotation.y=yawAt(carD);pShadow.scale.set((3.9+ph*.18)*sm,(7.6+ph*.3)*sm,1);pShadow.material.opacity=Math.max(0,.85-ph*.06);}
+  if(tw){
+    if(tw.st==='lift'&&liftG){const py=playerRoot.position.y-(walking?.2:1.3);liftG.position.set(_p.x,py,_p.z);liftG.rotation.y=yawAt(carD);liftG.userData.sh.scale.set(1,Math.max(.1,py),1);liftG.userData.sh.position.y=-py/2;}
+    for(const c of tw.comp){P(carD+c.dd+Math.sin(T*.8+c.ph)*7,carU+c.du+Math.sin(T*.6+c.ph)*1.6,_q);c.m.position.set(_q.x,carY+c.dy+Math.sin(T*2+c.ph)*.4+roadH(carD),_q.z);c.m.rotation.set(-.04,yawAt(carD+c.dd),Math.sin(T*1.1+c.ph)*.16);const rk=c.m.userData.rk;if(rk)rk.scale.set(1,1,1+Math.sin(T*38+c.ph)*.2);}
+  }
   const curv=bendAt(carD);
   if(state==='over'){playerRoot.rotation.y+=dt*5*(speed/40+.2);playerRoot.position.y=Math.max(.6,carY-stT*.8);}
   else if(showcase||pg)playerRoot.rotation.set(0,state==='menu'?0:T*.5,0);
@@ -2688,7 +3507,7 @@ function update(dt){
   if(riding){const h=(T*.6)%1;pLight.color.setHSL(h,1,.6);pLight.intensity=6;rbGlow.visible=true;rbGlow.material.color.setHSL(h,1,.55);rbGlow.scale.setScalar(2.6+Math.sin(T*10)*.25);}
   else{pLight.color.set(0x8fd6ff);pLight.intensity=1.2+boostF*3;rbGlow.visible=false;}
   updSparks(dt,riding);
-  playerRoot.visible=(inv>0&&racing)?Math.floor(T*14)%2===0:true;
+  playerRoot.visible=(inv>0&&racing&&!tw)?Math.floor(T*14)%2===0:true;
   bubble.scale.set(2.4,1.6,3.8);bubble.position.y=.2;
 
   if(!showcase){
@@ -2701,7 +3520,7 @@ function update(dt){
         if(o.kind!=='rock'){if(o.bu===undefined){o.bu=o.lane*LANE;o.vz0=o.vz;}o.bu+=(o.lane*LANE-o.bu)*Math.min(1,dt*2.2);o.u=o.bu+(o.weave?Math.sin(T*1.2+o.ph)*3.2:0);}
         const ud=o.m.userData;P(o.d,o.u,_q);o.m.position.set(_q.x,o.y-.05+(ud.gr?0:Math.sin(T*2+o.ph)*.12),_q.z);o.m.rotation.set(0,ud.saucer?T*1.5+o.ph:yawAt(o.d),o.weave?-Math.cos(T*1.2+o.ph)*(ud.moto?.35:ud.gr?.03:.12):0);
         if(ud.wheels&&racing)for(const w of ud.wheels)w.rotation.x-=o.vz*dt/ud.wr;
-        const f=o.m.userData.flames;for(let k=0;k<f.length;k++)f[k].scale.y=.6+Math.sin(T*35+k)*.08;
+        const f=o.m.userData.flames;for(let k=0;k<f.length;k++)f[k].scale.y=.6+Math.sin(T*35+k)*.08;if(o.fly&&ud.rk){ud.rk.scale.set(1,1,.8+Math.sin(T*38+o.ph)*.2);o.m.rotation.x=-.05;}
         if(o.kind==='rock'){o.m.children[0].material.emissive.setHex(o.bomb?0xff2200:0);o.m.children[0].material.emissiveIntensity=o.bomb?.8:0;if(o.fall){const kk=Math.min(1,Math.max(0,(carD-(o.d-95))/32));o.y=ALT[0]+(1-kk)*13;if(kk>.98&&!o.boom){o.boom=1;shake=Math.max(shake,.12);}}P(o.d,o.u,_q);o.m.position.set(_q.x,o.y-.1,_q.z);o.m.rotation.set(o.ph+(o.fall&&o.y>ALT[0]+.2?T*4:0),o.ph*1.7,0);}
         if(racing&&!o.hit&&inv<=0&&!rbSafe()&&!(o.rival&&runTime<2.5)&&Math.abs(o.u-carU)<(o.m.userData.hw||(o.kind==='saucer'?2.8:2.3))&&dy<2.6&&Math.abs(o.d-carD)<o.len){
           o.hit=true;
@@ -2718,23 +3537,23 @@ function update(dt){
       else if(o.t==='fuel'){P(o.d,o.u,_q);o.m.position.set(_q.x,o.y+.5+Math.sin(T*3+o.ph)*.3,_q.z);o.m.rotation.set(T*.7,T*1.3,0);o.m.children[1].scale.setScalar(1.6+Math.sin(T*6)*.2);
         if(racing&&du<2.6&&dy<2.8&&dd<2.8){o.done=true;fuel=Math.min(100,fuel+35);sfx.fuel();popup('+%35 YAKIT');track('fuel');}}
       else if(o.t==='orb'){P(o.d,o.u,_q);o.m.position.set(_q.x,o.y+.9+Math.sin(T*4+o.ph)*.3,_q.z);o.m.rotation.set(T*2,T*3,0);
-        if(racing&&du<2.6&&dy<2.8&&dd<2.8){o.done=true;if(boss)fireAtBoss();else{coins+=5;popup('+5');}}}
+        if(racing&&du<(boss?5:2.6)&&dy<(boss?5:2.8)&&dd<(boss?4.5:2.8)){o.done=true;if(boss)fireAtBoss();else{coins+=5;popup('+5');}}}
       else if(o.t==='key'){P(o.d,o.u,_q);o.m.position.set(_q.x,o.y+.9+Math.sin(T*3+o.ph)*.3,_q.z);o.m.rotation.set(0,T*2.5+o.ph,.3);
         if(racing&&du<2.5&&dy<2.7&&dd<2.7){o.done=true;keys++;keysGot++;sfx.coin();sfx.fuel();keyUI();
           if(keysGot%3===0){hearts++;if(hearts>maxH)maxH=hearts;renderHearts();sfx.zone();popup('🔑🔑🔑 3 ANAHTAR: +1 CAN!','big2');}
           else popup('🔑 ANAHTAR! ('+(keysGot%3)+'/3 → +1 CAN)');}}
       else if(o.t==='tower'){P(o.d,o.u,_q);o.m.position.set(_q.x,0,_q.z);o.m.rotation.set(0,yawAt(o.d),0);o.m.userData.disc.rotation.z=-T*2.5;o.m.userData.beacon.visible=Math.sin(T*6)>0;
-        if(racing&&!o.hit&&du<3.3&&o.d-carD<1.2&&o.d-carD>-5)enterTower(o);
+        if(racing&&!o.hit&&!tw&&!(rb&&rb.stage==='ride')&&du<3.3&&o.d-carD<1.2&&o.d-carD>-5)enterTower(o);
 }
       else if(o.t==='zepr'){P(o.d,o.u,_q);o.m.position.set(_q.x,0,_q.z);o.m.rotation.set(0,yawAt(o.d),0);const zz=o.m.userData.z;zz.position.y=27+Math.sin(T*1.2+o.ph)*.3;zz.rotation.z=Math.sin(T*.8)*.04;zz.userData.prop.rotation.z+=dt*10;o.m.userData.pad.material.opacity=.55+Math.sin(T*6)*.35;
-        if(racing&&!o.hit&&form==='rob'&&du<3.2&&o.d-carD<1.5&&o.d-carD>-4)enterRoadZep(o);
+        if(racing&&!o.hit&&!tw&&!(rb&&rb.stage==='ride')&&form==='rob'&&du<3.2&&o.d-carD<1.5&&o.d-carD>-4)enterRoadZep(o);
 }
       else if(o.t==='portal'){P(o.d,o.u,_q);o.m.position.set(_q.x,o.y+.6,_q.z);o.m.rotation.set(0,yawAt(o.d),0);o.m.userData.disc.rotation.z=-T*2.5;o.m.children[0].rotation.z=T;
         if(racing&&!o.hit&&du<3.4&&dy<3.2&&dd<1.8){o.hit=true;transformNow();}}
       else if(o.t==='shield'){P(o.d,o.u,_q);o.m.position.set(_q.x,o.y+.4+Math.sin(T*3)*.2,_q.z);o.m.rotation.set(T,T*1.5,0);
         if(racing&&du<2.3&&dy<2.4&&dd<2.6){o.done=true;shield=true;bubble.visible=true;popup('KALKAN AKTİF!');sfx.boost();}}
       else{P(o.d,o.u,_q);o.m.position.set(_q.x,o.y+.4,_q.z);o.m.rotation.set(0,yawAt(o.d),T);o.m.scale.setScalar(1+Math.sin(T*6)*.05);
-        if(racing&&!o.hit&&du<2.8&&dy<2.6&&dd<2){o.hit=true;burst=1.6;burstFree=true;sfx.boost();popup('BEDAVA TURBO!');}}
+        if(racing&&!o.hit&&du<2.8&&dy<2.6&&dd<2){o.hit=true;burst=4.6;burstFree=true;sfx.boost();popup('BEDAVA TURBO!');}}
       if(tunnels.length&&o.m)o.m.position.y+=roadH(o.d);
       if(o.done||o.d<carD-18||o.d>carD+600){o.m.visible=false;active.splice(i,1);}
     }
@@ -2748,6 +3567,9 @@ function update(dt){
   }else if(state==='over'||state==='result'){
     const a=Math.min(1,stT/3);tmpV.set(playerRoot.position.x+Math.sin(a*1.4)*13,3.5+a*8,playerRoot.position.z+Math.cos(a*1.4)*13);cam.position.lerp(tmpV,1-Math.exp(-dt*2.5));
     cam.lookAt(playerRoot.position.x,carY,playerRoot.position.z);cam.fov+=(55-cam.fov)*dt*2;
+  }else if(tw&&tw.st==='lift'){
+    P(carD-12.5,carU+5.5,_q);tmpV.set(_q.x,carY+4.2+roadH(carD),_q.z);cam.position.lerp(tmpV,1-Math.exp(-dt*8));
+    P(carD+1,carU,_q);cam.lookAt(_q.x,carY+1.6+roadH(carD),_q.z);cam.fov+=(66-cam.fov)*Math.min(1,dt*3);
   }else if(riding&&rb&&rb.d0){
     // gökkuşağı sürüşü: kamera şeridin arkasında-üstünde, yolun ilerisini (yükselen/kıvrılan şerit) net gösterir; yatma (roll) yok
     const t=(carD-rb.d0)/RBL,bk=form==='rob'?13:15,ah=46,tb=Math.max(0,t-bk/RBL),ta=Math.min(1,t+ah/RBL);
@@ -2756,7 +3578,7 @@ function update(dt){
     cam.fov+=(68+boostF*14+Math.min(1,speed/60)*4-cam.fov)*Math.min(1,dt*4);
     if(racing&&speed>8){const sj=Math.min(1,speed/60)*.01+boostF*.04;cam.position.x+=(Math.random()-.5)*sj;cam.position.y+=(Math.random()-.5)*sj;}
   }else{
-    const cm=RCAMS[rCam],rc=form==='rob'&&!riding?cm.rc:0,rbk=rc&&cm.b!==null&&cm.b>0?(cm.b>10?.72:1.1):1,rb2=rc?(cm.b!==null&&cm.b<0?0:rc*1.6):0;const dC=(cm.b===null?camD:carD-cm.b*rbk-boostF*cm.bf)-rb2;let uC=cm.s?carU+cm.s:cm.b<0?carU:carU*.7;const tc=tunnels.length?tunCeil(dC,uC):Infinity;if(tc<1e9)uC=Math.max(-9,Math.min(9,uC));
+    const cm=RCAMS[rCam],rc=form==='rob'&&!riding?cm.rc:0,rbk=rc&&cm.b!==null&&cm.b>0?(cm.b>10?.72:1.1):1,rb2=rc?(cm.b!==null&&cm.b<0?0:rc*1.6):0;const dC=(cm.b===null?camD:carD-cm.b*rbk-boostF*cm.bf)-rb2;let uC=cm.s?carU+cm.s:cm.b<0?carU:carU*.7;const tc=tunnels.length&&carY<11&&!(tw&&tw.st==='fly')?tunCeil(dC,uC):Infinity;if(tc<1e9)uC=Math.max(-9,Math.min(9,uC));
     P(dC,uC,_q);tmpV.set(_q.x,Math.min(carY+(rc&&cm.h>4?cm.h*.62:cm.h)+rc*1.6+roadH(carD),tc),_q.z);
     cam.position.lerp(tmpV,1-Math.exp(-dt*cm.k));
     if(shake>0){shake-=dt;cam.position.x+=(Math.random()-.5)*shake*1.4;cam.position.y+=(Math.random()-.5)*shake;}
@@ -3142,7 +3964,7 @@ function makeRoadZep(){const g=new THREE.Group(),z=zepModel();z.scale.setScalar(
   const pad=new THREE.Mesh(new THREE.RingGeometry(1.6,2.4,32),new THREE.MeshBasicMaterial({color:new THREE.Color(.4,2.2,2.6),side:THREE.DoubleSide,transparent:true,opacity:.9}));pad.rotation.x=-PI/2;pad.position.y=.08;g.add(pad);g.userData.pad=pad;
   const sg=new THREE.Mesh(G.plane,new THREE.MeshBasicMaterial({map:signTex('🎈 ZEPLİNE BİN · TAMİR','#e0352b'),transparent:true,side:THREE.DoubleSide}));sg.scale.set(7,1.6,1);sg.position.set(0,6.6,3.6);g.add(sg);
   g.visible=false;scene.add(g);return g;}
-function spawnRoadZep(d){if(COURSE||inTunnel(d)||inTunnel(d+40)||inTunnel(d-60)||(jn&&Math.abs(jn.J-d)<200)||forks.some(f=>Math.abs(f.J-d)<200)||(rb&&rb.d0&&d>rb.d0-60&&d<rb.d0+RBL+60))return false;
+function spawnRoadZep(d){if(boss||COURSE||inTunnel(d)||inTunnel(d+40)||inTunnel(d-60)||(jn&&Math.abs(jn.J-d)<200)||forks.some(f=>Math.abs(f.J-d)<200)||inRb(d,140))return false;
   const ln=pick([-1,0,1]);for(let i=active.length-1;i>=0;i--){const c=active[i];if(c.t==='car'&&c.lane===ln&&c.d>d-160&&c.d<d+20){c.m.visible=false;active.splice(i,1);}}
   blockLane={lane:ln,d0:d-160,d1:d+20};return !!spawn({t:'zepr',lane:ln,d,alt:0});}
 const RZT={wire:{n:'🔌 KABLOLARI BAĞLA',h:'Soldaki bir kabloya, sonra sağda aynı renkteki uca dokun.',t:20},bolt:{n:'🔩 VİDALARI SIK',h:'Her vidaya 3 kez dokunarak sık.',t:14},leak:{n:'💨 SIZINTILARI KAPAT',h:'Gaz kaçıran deliklere dokunup yamala! 8 tane kapat.',t:16},gauge:{n:'🎛 BASINCI AYARLA',h:'İbre yeşil alana gelince DURDUR\'a bas. 3 kez yap.',t:16}};
@@ -3921,8 +4743,8 @@ function makeBossStage(){const X=trX(),g=new THREE.Group(),ad=THREE.AdditiveBlen
   g.userData={sh,ring,rm,fl,bm,bm2,sw};g.visible=false;scene.add(g);return g;}
 function makeOrb(){const g=new THREE.Group();part(g,new THREE.IcosahedronGeometry(.8,0),new THREE.MeshStandardMaterial({color:C('#41f0ff'),emissive:C('#41f0ff'),emissiveIntensity:1.4,flatShading:true}),[0,0,0],[1,1,1]);
   part(g,G.sphL,new THREE.MeshBasicMaterial({color:new THREE.Color(.4,1.8,2.4),transparent:true,opacity:.3,blending:THREE.AdditiveBlending,depthWrite:false}),[0,0,0],[1.8,1.8,1.8]);g.visible=false;scene.add(g);return g;}
-function bossUI(){$('#bossHp').style.width=(boss?boss.hp/boss.max*100:0)+'%';$('#bossTime').textContent=boss?Math.max(0,Math.ceil(50-boss.t))+' sn':'';}
-function startBoss(){boss={hp:5,max:5,t:0,nb:2,no:1.2,hitT:0,landed:false,sw:-1};bossMesh.visible=true;bossStage.visible=true;shake=Math.max(shake,.5);{const fl=$('#flash');fl.classList.remove('on');void fl.offsetWidth;fl.classList.add('on');}show('#bossBar',true);bossUI();sfx.zone();popup('⚠ BOSS: DEV ROBOT UFO!','big2');popup('💠 MAVİ KÜRELERİ TOPLA, BOSSU VUR!');}
+function bossUI(){$('#bossHp').style.width=(boss?boss.hp/boss.max*100:0)+'%';$('#bossTime').textContent=boss?Math.max(0,Math.ceil(75-boss.t))+' sn':'';}
+function startBoss(){boss={hp:3,max:3,t:0,nb:2,no:1.2,hitT:0,landed:false,sw:-1};bossMesh.visible=true;bossStage.visible=true;shake=Math.max(shake,.5);{const fl=$('#flash');fl.classList.remove('on');void fl.offsetWidth;fl.classList.add('on');}show('#bossBar',true);bossUI();sfx.zone();popup('⚠ BOSS: DEV ROBOT UFO!','big2');popup('💠 MAVİ KÜRELERİ TOPLA, BOSSU VUR!');}
 function endBoss(){boss=null;if(bossMesh)bossMesh.visible=false;if(bossStage)bossStage.visible=false;show('#bossBar',false);bossShots.forEach(s=>scene.remove(s.m));bossShots.length=0;nextBoss=carD+rnd(2600,3600);}
 function bossWin(){gold+=150;gems+=15;saveGarage();track('boss');addXP(60);burstT=.6;burstM.visible=true;const fl=$('#flash');fl.classList.remove('on');void fl.offsetWidth;fl.classList.add('on');
   sfx.zone();sfx.buy();popup('🏆 BOSS YENİLDİ!','big2');popup('+150 🪙 +15 💎');endBoss();}
@@ -3938,11 +4760,11 @@ function bossUpdate(dt){
    u.fl.scale.setScalar(26+10*pul);u.fl.material.opacity=.25+.25*pul;u.bm.scale.set(1,H,1);u.bm.position.y=H/2;u.bm.material.opacity=(.14+.1*pul)*ee;u.bm2.scale.set(1,H,1);u.bm2.position.y=H/2;u.bm2.material.opacity=(.14+.12*pul)*ee;
    if(boss.sw>=0){boss.sw+=dt;const k=boss.sw/.9;if(k>=1){boss.sw=-1;u.sw.visible=false;}else{u.sw.visible=true;u.sw.scale.setScalar(6+k*70);u.sw.material.opacity=(1-k)*.9;}}
    bossMesh.userData.aura&&(bossMesh.userData.aura.material.opacity=.4+.25*pul);}
-  boss.nb-=dt;if(boss.nb<=0){boss.nb=rnd(1.1,1.7)*(boss.hp<=2?.7:1);const o=spawn({t:'car',kind:'rock',lane:pick([-1,0,1]),d:carD+rnd(55,80),alt:0,vz:0,fall:true});if(o)o.bomb=1;}
-  boss.no-=dt;if(boss.no<=0){boss.no=rnd(2,3);spawn({t:'orb',lane:pick([-1,0,1]),d:carD+rnd(60,80),alt:Math.random()<.3?1:0});}
+  boss.nb-=dt;if(boss.nb<=0){boss.nb=rnd(2.4,3.4);const o=spawn({t:'car',kind:'rock',lane:pick([-1,0,1]),d:carD+rnd(55,80),alt:0,vz:0,fall:true});if(o)o.bomb=1;}
+  boss.no-=dt;if(boss.no<=0){boss.no=rnd(.8,1.3);spawn({t:'orb',lane:pick([-1,0,1]),d:carD+rnd(60,80),alt:Math.random()<.3?1:0});}
   for(let i=bossShots.length-1;i>=0;i--){const s=bossShots[i];s.t+=dt*2.2;const k=Math.min(1,s.t);s.m.position.lerpVectors(playerRoot.position,bossMesh.position,k);s.m.position.y+=Math.sin(k*PI)*4;s.m.rotation.z+=dt*10;
     if(k>=1){scene.remove(s.m);bossShots.splice(i,1);boss.hp--;boss.hitT=.3;sfx.hit();shake=.2;popup('💥 BOSSU VURDUN! ('+boss.hp+')');if(boss.hp<=0){bossWin();return;}}}
-  bossUI();if(boss.t>50){popup('BOSS KAÇTI!','warn');endBoss();}}
+  bossUI();if(boss.t>75){popup('BOSS KAÇTI!','warn');endBoss();}}
 function fireAtBoss(){const m=new THREE.Mesh(G.cone,new THREE.MeshBasicMaterial({color:new THREE.Color(.5,2.2,2.6)}));m.scale.set(.5,1.4,.5);m.position.copy(playerRoot.position);scene.add(m);bossShots.push({m,t:0});sfx.boost();}
 /* ---------- Kupa Salonu ---------- */
 const HALL={x:22,z:-58};let trophies=[];
@@ -4041,6 +4863,210 @@ function renderQuests(){const L=$('#qList');L.innerHTML='';$('#qtQ').classList.t
   else{const got=ACH.filter(A=>achGot[A.id]).length;$('#qLvl').textContent+=' · 🏆 '+got+'/'+ACH.length;
     for(const A of ACH){const v=statVal(A.k),st=achGot[A.id]===2?'cl':achGot[A.id]===1?'ok':'go';row('🏆 '+A.t,A.x,v,A.n,'💎 '+A.gems+' · ⭐ '+(A.gems*5),st,()=>{achGot[A.id]=2;store.set('achGot',achGot);gems+=A.gems;saveGarage();sfx.buy();popup('+'+A.gems+' 💎','big2');addXP(A.gems*5);menuInfo();renderQuests();});}}
   progUI();}
+/* ---------- Bilgi Yarışması (İslam kültürü) ---------- */
+const QZQ=[
+[1,"İslam'ın şartı kaç tanedir?","5",["3","4","6"]],
+[1,"Kur'an-ı Kerim kaç sûreden oluşur?","114",["99","100","120"]],
+[1,"Müslümanların kutsal kitabı hangisidir?","Kur'an-ı Kerim",["Tevrat","İncil","Zebur"]],
+[1,"Günde kaç vakit namaz kılınır?","5",["3","4","6"]],
+[1,"Ramazan ayında hangi ibadet yapılır?","Oruç",["Hac","Kurban","Umre"]],
+[1,"Müslümanların namazda yöneldiği yer neresidir?","Kâbe",["Mescid-i Nebevî","Ayasofya","Süleymaniye"]],
+[1,"Hz. Muhammed (s.a.s.) hangi şehirde doğmuştur?","Mekke",["Medine","Kudüs","Taif"]],
+[1,"Hac ibadeti hangi şehirde yapılır?","Mekke",["Medine","Kudüs","Şam"]],
+[1,"Ramazan ayının sonunda hangi bayram kutlanır?","Ramazan Bayramı",["Kurban Bayramı","Nevruz","Hıdırellez"]],
+[1,"Ezan okuyan görevliye ne denir?","Müezzin",["İmam","Vaiz","Müftü"]],
+[1,"İslam'ın ilk şartı hangisidir?","Kelime-i şehâdet",["Namaz","Oruç","Zekât"]],
+[1,"Cuma namazından önce okunan konuşmaya ne denir?","Hutbe",["Meal","Tefsir","Salât"]],
+[1,"Hz. Muhammed (s.a.s.) hangi şehre hicret etmiştir?","Medine",["Taif","Kudüs","Şam"]],
+[1,"İlk insan ve ilk peygamber kimdir?","Hz. Âdem",["Hz. Nûh","Hz. İbrahim","Hz. Mûsâ"]],
+[1,"Son peygamber kimdir?","Hz. Muhammed",["Hz. İsâ","Hz. Mûsâ","Hz. Yûsuf"]],
+[1,"Kurban Bayramı hangi peygamberin kıssasıyla ilgilidir?","Hz. İbrahim",["Hz. Nûh","Hz. Yûsuf","Hz. Mûsâ"]],
+[1,"Kâbe'yi oğlu İsmâil ile birlikte yükselten peygamber kimdir?","Hz. İbrahim",["Hz. Dâvûd","Hz. Süleyman","Hz. Nûh"]],
+[1,"Kur'an-ı Kerim'in indirilmeye başlandığı ay hangisidir?","Ramazan",["Muharrem","Receb","Şaban"]],
+[1,"Peygamberimize ilk vahiy hangi mağarada geldi?","Hira",["Sevr","Ashâb-ı Kehf","Safâ"]],
+[1,"Peygamberlere vahyi getiren melek kimdir?","Cebrâil",["Mîkâil","İsrâfil","Azrâil"]],
+[1,"Ruhları almakla görevli melek kimdir?","Azrâil",["Cebrâil","Mîkâil","İsrâfil"]],
+[1,"Peygamberimizin ilk eşi kimdir?","Hz. Hatice",["Hz. Âişe","Hz. Hafsa","Hz. Zeynep"]],
+[1,"İlk halife kimdir?","Hz. Ebû Bekir",["Hz. Ömer","Hz. Osman","Hz. Ali"]],
+[1,"“Bismillah” ne anlama gelir?","Allah'ın adıyla",["Allah büyüktür","Hamd Allah'a mahsustur","Allah'a şükür"]],
+[1,"“Elhamdülillah” ne anlama gelir?","Hamd Allah'a mahsustur",["Allah büyüktür","Allah'ın adıyla","Allah her şeyi bilir"]],
+[1,"“Allahu ekber” ne anlama gelir?","Allah en büyüktür",["Allah birdir","Allah'ın adıyla","Allah affedicidir"]],
+[1,"Oruç akşam hangi yemekle açılır?","İftar",["Sahur","Kumanya","Ziyafet"]],
+[1,"Hacca gidenlere ne denir?","Hacı",["Hâfız","Müezzin","Müftü"]],
+[1,"Kur'an-ı Kerim'i ezbere bilene ne denir?","Hâfız",["Hacı","Müezzin","Vaiz"]],
+[2,"Hz. Muhammed kaç yaşında peygamber olmuştur?","40",["25","33","63"]],
+[2,"Hicrî takvim hangi olayla başlar?","Hicret",["Peygamberimizin doğumu","Mi'râc","Mekke'nin fethi"]],
+[2,"Peygamberimizin Medine'de yaptırdığı ilk mescit hangisidir?","Kubâ Mescidi",["Mescid-i Aksâ","Mescid-i Haram","Ayasofya"]],
+[2,"Müslümanların ilk kıblesi neresidir?","Mescid-i Aksâ",["Mescid-i Nebevî","Kubâ Mescidi","Ayasofya"]],
+[2,"Bedir Savaşı'nda Müslümanların sayısı yaklaşık kaçtır?","313",["100","700","3000"]],
+[2,"Hendek Savaşı'nda hendek kazma fikrini veren sahabi kimdir?","Selmân-ı Fârisî",["Hz. Ali","Hz. Ömer","Bilâl-i Habeşî"]],
+[2,"İsrâ yolculuğu hangi iki mescit arasındadır?","Mescid-i Haram – Mescid-i Aksâ",["Kubâ – Mescid-i Nebevî","Mescid-i Aksâ – Kubâ","Mescid-i Nebevî – Mescid-i Haram"]],
+[2,"Kur'an-ı Kerim'in en uzun sûresi hangisidir?","Bakara",["Âl-i İmrân","Nisâ","Yâsîn"]],
+[2,"Âyetü'l-Kürsî hangi sûrede yer alır?","Bakara",["Fâtiha","Yâsîn","Mülk"]],
+[2,"İhlâs sûresi kaç âyettir?","4",["3","5","7"]],
+[2,"Fâtiha sûresi kaç âyettir?","7",["4","5","10"]],
+[2,"Kâbe'nin etrafında yedi defa dönmeye ne denir?","Tavaf",["Sa'y","Vakfe","Rükû"]],
+[2,"Hacda Arafat'ta bulunmaya ne denir?","Vakfe",["Tavaf","Sa'y","İhram"]],
+[2,"Zemzem kuyusu hangi şehirdedir?","Mekke",["Medine","Kudüs","Taif"]],
+[2,"Kadir Gecesi hangi ayda yer alır?","Ramazan",["Receb","Şaban","Zilhicce"]],
+[2,"Balığın karnında kalan peygamber kimdir?","Hz. Yûnus",["Hz. Eyyûb","Hz. Zekeriyyâ","Hz. Yâkûb"]],
+[2,"Tevrat hangi peygambere verilmiştir?","Hz. Mûsâ",["Hz. İsâ","Hz. Dâvûd","Hz. Muhammed"]],
+[2,"İncil hangi peygambere verilmiştir?","Hz. İsâ",["Hz. Mûsâ","Hz. Dâvûd","Hz. İbrahim"]],
+[2,"Hz. Mûsâ'nın kardeşi ve yardımcısı olan peygamber kimdir?","Hz. Hârûn",["Hz. Yûsuf","Hz. Zekeriyyâ","Hz. Yahyâ"]],
+[2,"Hz. İsâ'nın annesi kimdir?","Hz. Meryem",["Hz. Hacer","Hz. Âsiye","Hz. Hatice"]],
+[2,"Allah'ın güzel isimlerine ne denir?","Esmâ-ül Hüsnâ",["Sünnet","Hadis","Siyer"]],
+[2,"Esmâ-ül Hüsnâ'nın sayısı meşhur rivayete göre kaçtır?","99",["33","40","114"]],
+[2,"Sabah namazının farzı kaç rekâttır?","2",["3","4","5"]],
+[2,"Akşam namazının farzı kaç rekâttır?","3",["2","4","5"]],
+[2,"Hac ibadeti hangi ayda yapılır?","Zilhicce",["Ramazan","Muharrem","Receb"]],
+[2,"Hicrî takvimin ilk ayı hangisidir?","Muharrem",["Ramazan","Safer","Şevval"]],
+[2,"Hadis ne demektir?","Peygamberimizin söz, fiil ve onayları",["İndirilen kutsal kitap","Namazın şartları","Peygamberlerin kıssaları"]],
+[3,"Peygamberimiz hangi olayın yaşandığı yıl dünyaya gelmiştir?","Fil Vakası",["Hendek Savaşı","Hicret","Bedir Savaşı"]],
+[3,"Peygamberimizin sütannesi kimdir?","Halime",["Hatice","Fâtıma","Âmine"]],
+[3,"Peygamberimize gençliğinde verilen “Muhammedü'l-Emîn” lakabı ne demektir?","Güvenilir Muhammed",["Cesur Muhammed","Âlim Muhammed","Zengin Muhammed"]],
+[3,"Hz. Ömer'in lakabı nedir?","Fârûk",["Sıddîk","Zinnûreyn","Esedullah"]],
+[3,"Hz. Ebû Bekir'in lakabı nedir?","Sıddîk",["Fârûk","Zinnûreyn","Seyfullah"]],
+[3,"Kur'an-ı Kerim'in mushaf olarak çoğaltılıp merkezlere gönderilmesi hangi halife döneminde olmuştur?","Hz. Osman",["Hz. Ömer","Hz. Ali","Hz. Muâviye"]],
+[3,"Üçüncü halife kimdir?","Hz. Osman",["Hz. Ömer","Hz. Ali","Hz. Ebû Bekir"]],
+[3,"Kâbe'nin örtüsüne ne denir?","Kisve",["Hırka","Seccade","Sancak"]],
+[3,"Kâbe'nin köşesinde bulunan siyah taşa ne denir?","Hacerülesved",["Makam-ı İbrahim","Hatîm","Mültezem"]],
+[3,"Hicret yolculuğunda Peygamberimizle birlikte Sevr Mağarası'na sığınan sahabi kimdir?","Hz. Ebû Bekir",["Hz. Ömer","Hz. Ali","Hz. Osman"]],
+[3,"Peygamberimizin Medine'ye varınca ilk misafir olduğu sahabi kimdir?","Ebû Eyyûb el-Ensârî",["Sa'd b. Muâz","Ebû Zer","Mus'ab b. Umeyr"]],
+[3,"Mekke hangi hicrî yılda fethedilmiştir?","8",["2","5","10"]],
+[3,"Veda Hutbesi hangi yerde okunmuştur?","Arafat",["Mina","Kâbe","Medine"]],
+[3,"Kur'an-ı Kerim'de ismi geçen tek kadın kimdir?","Hz. Meryem",["Hz. Hatice","Hz. Âsiye","Hz. Hacer"]],
+[3,"Kur'an-ı Kerim'de adı geçen peygamber sayısı kaçtır?","25",["12","40","124"]],
+[3,"Kur'an-ı Kerim'in ilk inen âyetleri hangi sûrede yer alır?","Alak",["Fâtiha","Müddessir","Bakara"]],
+[3,"Peygamberimizin kızı Hz. Fâtıma ile evlenen sahabi kimdir?","Hz. Ali",["Hz. Osman","Hz. Ömer","Hz. Zübeyr"]],
+[3,"Hz. Hasan ile Hz. Hüseyin'in annesi kimdir?","Hz. Fâtıma",["Hz. Hatice","Hz. Âişe","Hz. Zeynep"]],
+[3,"Mevlid Kandili hangi ayda idrak edilir?","Rebîülevvel",["Receb","Şaban","Ramazan"]],
+[3,"Berat Kandili hangi ayda idrak edilir?","Şaban",["Receb","Ramazan","Muharrem"]],
+[3,"Kurban Bayramı kaç gün sürer?","4",["2","3","5"]],
+[3,"Ramazan Bayramı kaç gün sürer?","3",["2","4","5"]],
+[3,"Hz. Süleyman hangi canlılarla konuşabilen bir peygamberdir?","Kuşlar ve karıncalar (hayvanlar)",["Yalnızca balıklar","Yalnızca develer","Hiçbiri"]],
+];
+QZQ.push(
+[1,"Yüce Allah'ı anmak ve her hayırlı işe başlarken söylediğimiz 'Bismillahirrahmanirrahim' sözünün kısa adı nedir?","Besmele",["Tekbir", "Salavat", "Kelime-i Tevhid"],"Her hayırlı işe besmele çekerek başlarız; bu 'Rahman ve Rahim olan Allah'ın adıyla' demektir."],
+[1,"Peygamber Efendimiz Hz. Muhammed'in (s.a.v.) annesinin adı nedir?","Hz. Amine",["Hz. Hatice", "Hz. Fatıma", "Hz. Halime"],"Peygamberimizin annesinin adı Amine, babasının adı ise Abdullah'tır."],
+[1,"Ramazan ayında tutulan oruca başlarken gece yenen yemeğe ne ad verilir?","Sahur",["İftar", "Kandil", "Bayram"],"Oruç tutmak için imsak vaktinden önce gece uyanıp yenen yemeğe sahur denir."],
+[1,"Kur'an-ı Kerim'in ilk suresi ve namazların her rekatında okunan sure hangisidir?","Fatiha",["İhlas", "Kevser", "Nas"],"Fatiha suresi Kur'an-ı Kerim'in 'başlangıç' suresidir ve her rekatta okunur."],
+[1,"Müslümanları namaza çağırmak için günde beş vakit camilerden okunan çağrıya ne ad verilir?","Ezan",["Mevlit", "İlahi", "Salavat"],"Ezan, namaz vaktinin girdiğini bildiren ve cemaate çağrı yapan kutsal sözlerdir."],
+[2,"Abdest alırken başı ıslak elle hafifçe silme hareketine ne ad verilir?","Mesh",["Gusül", "Teyemmüm", "İstinca"],"Abdestte ıslak eli başın üzerine sürmeye mesh denir ve bu abdestin farzlarındandır."],
+[2,"Büyük bir tufandan önce dev bir gemi inşa ederek inananları ve hayvanları kurtaran peygamber kimdir?","Hz. Nuh",["Hz. İbrahim", "Hz. Musa", "Hz. Yunus"],"Hz. Nuh, kavminin inkârı üzerine Allah'ın emriyle gemi yapmış ve Nuh Tufanı'ndan kurtulmuştur."],
+[2,"İlk ezanı okuyan ve İslam'ın ilk müezzini olan sahabe kimdir?","Hz. Bilal-i Habeşi",["Hz. Zeyd", "Hz. Selman-ı Farisi", "Hz. Ali"],"Peygamberimizin emriyle Medine'de ilk ezanı Hz. Bilal-i Habeşi okumuştur."],
+[2,"İnsanların sağında ve solunda durarak iyi ve kötü amellerini kaydeden meleklere ne ad verilir?","Kiramen Kâtibin",["Münker ve Nekir", "Hamele-i Arş", "Zebaniler"],"Kiramen Kâtibin 'şerefli yazıcılar' anlamına gelir ve amellerimizi yazmakla görevlidir."],
+[2,"Kur'an-ı Kerim'in 'kalbi' olarak nitelendirilen ve sıklıkla okunan sure hangisidir?","Yasin",["Mülk (Tebareke)", "Rahman", "Bakara"],"Hadis-i şerifte Yasin suresi 'Kur'an'ın kalbi' olarak anılmıştır."],
+[3,"Dinen zengin sayılan bir Müslümanın yılda bir kez malının belli bir oranını ihtiyaç sahiplerine vermesi farzdır. Bu asgari zenginlik sınırına ne denir?","Nisap",["Fitre", "Sadaka", "İnfak"],"Nisap miktarı malı olan kimse dinen zengin sayılır ve zekât vermekle yükümlü olur."],
+[3,"Kur'an-ı Kerim hangi halife döneminde bir heyet tarafından kitap (Mushaf) haline toplanmıştır?","Hz. Ebubekir",["Hz. Ömer", "Hz. Osman", "Hz. Ali"],"Yemame Savaşı'nda hafızların şehit düşmesi üzerine Hz. Ömer'in teklifiyle Hz. Ebubekir Kur'an'ı mushaf yaptırmıştır. Hz. Osman ise çoğaltmıştır."],
+[3,"Müslümanlar ile Mekkeli müşrikler arasında 628 yılında yapılan ve fethin önünü açan barış antlaşması hangisidir?","Hudeybiye Antlaşması",["Akabe Biatı", "Medine Sözleşmesi", "Rıdvan Biatı"],"Hudeybiye Antlaşması ile Mekkeliler İslam toplumunu resmen muhatap ve taraf kabul etmiştir."],
+[3,"Peygamberlerin sıfatlarından biri olan 'Fetanet' kelimesi ne anlama gelir?","Üstün akıl ve zekâya sahip olmak",["Güvenilir olmak", "Doğru sözlü olmak", "Günahsız olmak"],"Fetanet: Üstün kavrayış ve zeka; İsmet: Günahsızlık; Sıdk: Doğruluk; Emanet: Güvenilirliktir."],
+[3,"Hadis edebiyatında en güvenilir kabul edilen altı temel hadis kitabına genel olarak ne ad verilir?","Kütüb-i Sitte",["Müsned", "Sünen-i Erbaa", "Muvatta"],"Buhari ve Müslim başta olmak üzere altı sahih hadis mecmuasına 'Kütüb-i Sitte' denir."]
+);
+QZQ.push(
+[1,"'Allah birdir, O'ndan başka ilah yoktur' inancını ve O'na hiçbir şeyi ortak koşmamayı ifade eden temel kavram hangisidir?","Tevhid",["Adalet", "İhlas", "Nübüvvet"],"Tevhid, Allah'ın bir ve tek olduğuna, eşi ve benzeri bulunmadığına inanmaktır. İhlas Suresi bu inancı özetler."],
+[1,"Namaz kılmak isteyen bir kişinin sırasıyla ellerini, yüzünü, kollarını yıkaması ve başını mesh etmesiyle yaptığı manevi temizliğe ne denir?","Abdest",["Gusül", "Teyemmüm", "İstihare"],"Abdest, belirli organları usulüne uygun yıkayıp başı mesh ederek alınan, namazın geçerlilik şartı olan ibadettir."],
+[1,"Peygamberimiz Hz. Muhammed (s.a.v.) vefat edene kadar ve çocukluğunun bir döneminde bakımını üstlenen amcası kimdir?","Ebu Talip",["Hz. Hamza", "Hz. Abbas", "Ebu Leheb"],"Dedesi Abdülmuttalib'in vefatından sonra Peygamberimizi amcası Ebu Talip yanına almış ve büyütmüştür."],
+[1,"Kur'an-ı Kerim'in en kısa suresi olan ve 'Şüphesiz biz sana bol nimet verdik' müjdesiyle başlayan sure hangisidir?","Kevser",["İhlas", "Felak", "Nas"],"Kevser Suresi 3 ayetten oluşur ve Kur'an-ı Kerim'in en kısa suresidir."],
+[2,"Dört büyük melekten biri olan ve kıyametin kopuşunu ile yeniden dirilişi bildirmek için 'Sûr' borusuna üfleyecek olan melek hangisidir?","İsrafil",["Cebrail", "Mikail", "Azrail"],"İsrafil (a.s.), Sur borusuna iki defa üflemekle görevlidir: İlkinde kıyamet kopar, ikincisinde yeniden diriliş gerçekleşir."],
+[2,"Müslümanların 622 yılında Mekke'den Medine'ye göçü (Hicret) sonrasında, Medineli yerli Müslümanlara verilen unvan hangisidir?","Ensar",["Muhacir", "Ashab-ı Suffe", "Havariler"],"Göç edenlere 'Muhacir', onlara kucak açıp evlerini ve mallarını paylaşan Medinelilere 'Yardım edenler' anlamında 'Ensar' denir."],
+[2,"Ramazan ayında oruç tutamayacak derecede sürekli hasta veya yaşlı olan kimselerin, tutamadıkları her gün için bir yoksulu doyuracak miktarda ödedikleri bedele ne denir?","Fidye",["Fitre (Sadaka-i Fıtr)", "Öşür", "Kefaret"],"İyileşme umudu olmayan kronik hastalar veya ileri yaştaki kişiler tutamadıkları oruçlar için fidye verirler."],
+[2,"Kendisine dört büyük ilahi kitaptan biri olan 'Zebur' indirilen peygamber kimdir?","Hz. Davud",["Hz. Musa", "Hz. İsa", "Hz. Süleyman"],"İlahi kitaplar: Tevrat Hz. Musa'ya, Zebur Hz. Davud'a, İncil Hz. İsa'ya ve Kur'an Hz. Muhammed'e (s.a.v.) indirilmiştir."],
+[3,"İslam hukukunda hakkında açık bir ayet veya hadis bulunmayan bir meseleyi, aralarındaki ortak illet (gerekçe) sebebiyle hükmü bilinen benzer bir meseleye kıyaslayarak çözmeye ne ad verilir?","Kıyas",["İcma", "İstihsan", "Maslahat"],"Kıyas, dinin asıl delillerinden (edille-i şer'iyye) dördüncüsüdür; hükmü nass ile sabit olana benzetme yöntemidir."],
+[3,"Peygamberlerin insanlara tebliğ ettikleri vahyi eksiksiz ve olduğu gibi ulaştırmalarını ifade eden sıfatı hangisidir?","Tebliğ",["Sıdk", "Fetanet", "İsmet"],"Tebliğ, peygamberlerin Allah'tan aldıkları emir ve yasakları topluma hiçbir ekleme veya çıkarma yapmadan bildirmeleridir."],
+[3,"Abbasiler döneminde Bağdat'ta kurulan, antik metinlerin Arapçaya tercüme edildiği ve İslam Rönesansı'nın merkezi kabul edilen kütüphane/akademi hangisidir?","Beytü'l-Hikme",["Nizamiye Medresesi", "Darülhikme", "Kurtuba Medresesi"],"Beytü'l-Hikme (Bilgelik Evi), Halife Memun döneminde altın çağını yaşayan tercüme ve bilim merkezidir."],
+[3,"Kur'an-ı Kerim'in mushaf haline getirilmesi sırasında komisyon başkanlığı yapan ve hafızlığı ile tanınan genç sahabi kimdir?","Zeyd b. Sabit",["Abdullah b. Mesud", "Muaz b. Cebel", "Ubey b. Ka'b"],"Hz. Ebubekir'in emriyle vahiy kâtibi Zeyd b. Sabit başkanlığında oluşturulan heyet, Kur'an ayetlerini tek bir kitap haline getirmiştir."],
+[1,"İslam dininde meleklerin hangi maddeden yaratıldığına inanılır?","Nur (Işık)",["Toprak", "Ateş", "Su"],"Hadis-i şerife göre melekler nurdan, cinler ateşten, insanlar ise topraktan yaratılmıştır."],
+[1,"Ramazan ayında yatsı namazından sonra cemaatle veya tek başına kılınan sünnet namaz hangisidir?","Teravih",["Vitir", "Teheccüd", "Kuşluk"],"Teravih namazı, Ramazan ayına mahsus olup yatsı namazının ardından vitirden önce kılınan sünnettir."],
+[1,"Peygamberimiz Hz. Muhammed'in (s.a.v.) kabrinin bulunduğu ve 'güzel koku bahçesi' anlamına gelen bölüm neresidir?","Ravza-i Mutahhara",["Mescid-i Aksa", "Kuba Mescidi", "Kabe"],"Peygamber Efendimizin Medine'deki kabri ile minberi arasındaki alana Ravza-i Mutahhara denir."],
+[1,"Müslümanların karşılaştıklarında birbirlerine sağlık ve esenlik dilemek için söyledikleri 'Selamün Aleyküm' sözü ne anlama gelir?","Allah'ın selamı ve barışı üzerinize olsun",["Günün aydın olsun", "Yolun açık olsun", "Allah seni korusun"],"Selamlaşmak sevgiyi artırır ve 'Allah'ın esenliği, güveni ve barışı sizinle olsun' duasıdır."],
+[1,"Sabrıyla bilinen, ağır hastalıklara ve zorluklara rağmen Allah'a şükretmekten vazgeçmeyen peygamber kimdir?","Hz. Eyyüb",["Hz. Yusuf", "Hz. İsa", "Hz. Süleyman"],"Hz. Eyyüb, büyük sıkıntı ve hastalıklara gösterdiği sabır sebebiyle 'sabrın simgesi' olarak anılır."],
+[1,"Kur'an-ı Kerim'in her 20 sayfalık bölümüne ne ad verilir?","Cüz",["Sure", "Ayet", "Hizip"],"Kur'an-ı Kerim 30 eşit cüzden oluşur ve her cüz 20 sayfadır."],
+[2,"Hac veya umre ibadeti yapacak kişinin, diğer zamanlarda helal olan bazı fiilleri kendisine haram kılıp mikat sınırında girdiği özel duruma ve giydiği dikişsiz örtüye ne denir?","İhram",["Tavaf", "Sa'y", "Vakfe"],"İhram, hac ve umrenin şartı olup kişinin geçici olarak bazı dünyevi tasarruflardan uzaklaşmasını simgeler."],
+[2,"Kıyamet koptuktan sonra insanların hesap vermek üzere toplanacağı büyük meydana ve bu toplanma olayına sırasıyla ne denir?","Mahşer - Haşir",["Berzah - Kıyamet", "Mizan - Sırat", "Araf - Ba's"],"İnsanların diriltilip toplanmasına 'haşir', toplandıkları alana ise 'mahşer' denir."],
+[2,"İslam tarihinde Müslümanlar ile Mekkeli müşrikler arasında yapılan ve Müslümanların kazandığı ilk büyük savunma savaşı hangisidir?","Bedir Savaşı",["Uhud Savaşı", "Hendek Savaşı", "Hayber Seferi"],"624 yılında yapılan Bedir Savaşı, Müslümanların müşriklere karşı kazandığı ilk askeri zaferdir."],
+[2,"Kur'an-ı Kerim'de başında 'Besmele' bulunmayan tek sure hangisidir?","Tevbe Suresi",["Neml Suresi", "Enfal Suresi", "Kafirun Suresi"],"Tevbe Suresi'nin başında besmele yoktur. Neml Suresi'nde ise iki besmele bulunur (biri ayet içinde)."],
+[2,"Bütün vücudun hiç kuru yer kalmayacak şekilde yıkanmasıyla yerine getirilen ve ağza-burna su vermeyi de içeren hükmi temizliğe ne ad verilir?","Gusül (Boy Abdesti)",["Teyemmüm", "Necasetten Taharet", "Hadesten Taharet"],"Guslün farzı ağza bol su vermek, burna su çekmek ve bütün bedeni kuru yer kalmayacak şekilde yıkamaktır."],
+[2,"Kardeşleri tarafından kuyuya atılan, ardından Mısır'a köle olarak satılıp yıllar sonra oraya yönetici olan peygamber kimdir?","Hz. Yusuf",["Hz. Yakub", "Hz. Harun", "Hz. Yahya"],"Kur'an'da 'Ahsenü'l-Kasas' (kıssaların en güzeli) olarak anlatılan ibret dolu hayat Hz. Yusuf'a aittir."],
+[2,"İnsanın ölümünden sonra da amel defterine sevap yazdıran cami, okul, çeşme gibi kalıcı hayır kurumlarına ne ad verilir?","Sadaka-i Cariye",["Zekat", "Fıtır Sadakası", "Adak"],"Peygamberimiz; faydalı ilim, hayırlı evlat ve sadaka-i cariyenin (kesintisiz hayır) sevabının ölümden sonra da sürdüğünü bildirmiştir."],
+[3,"Allah'ın evrende koyduğu; fiziksel, biyolojik ve toplumsal kanunların genel adı Kur'an terminolojisinde hangisidir?","Sünnetullah",["Tekvin", "İlham", "Kaza"],"Sünnetullah veya Adetullah; Allah'ın evrenin işleyişi ve toplumların yükseliş/çöküş yasaları için koyduğu değişmez kanunlarıdır."],
+[3,"Hz. Peygamber'in ara sıra yaptığı, bazen de terk ettiği, terk edenin kınanmadığı amellere ne ad verilir?","Sünnet-i Gayr-i Müekkede",["Sünnet-i Müekkede", "Müstehap", "Vacip"],"Hz. Peygamber'in devamlı yaptığı sünnetlere müekkede, ara sıra yapıp bazen terk ettiği sünnetlere gayr-i müekkede denir. İkindi ve yatsının ilk sünnetleri gibi."],
+[3,"Tıp alanında yazdığı 'el-Kânûn fi't-Tıbb' (Tıbbın Kanunu) eseri yüzyıllarca Avrupa üniversitelerinde ders kitabı olarak okutulan Müslüman hekim kimdir?","İbn Sina",["İbn Rüşd", "Farabi", "Razi"],"Batı dünyasında 'Avicenna' olarak tanınan İbn Sina, tıp ve felsefe alanındaki eserleriyle dünya bilim tarihine yön vermiştir."],
+[3,"Ehl-i Sünnet inanç sisteminde akıl ile nakil (vahiy) dengesini kuran, amelde Hanefi mezhebine mensup Müslümanların akaid imamı kimdir?","İmam Maturidi",["İmam Eş'ari", "İmam Gazali", "Vasil b. Ata"],"Semerkant'ta yetişen İmam Maturidi, Türk dünyası ve Hanefiler başta olmak üzere Ehl-i Sünnet akaidinin iki ana imamından biridir."],
+[3,"Yalan üzere birleşmeleri aklen ve adeten mümkün olmayan kalabalık bir topluluğun nesilden nesile aktardığı en kesin bilgi derecesindeki hadislere ne denir?","Mütevatir Hadis",["Meşhur Hadis", "Ahad Hadis", "Kudsi Hadis"],"Mütevatir haber/hadis, kesin bilgi (yakîn) ifade eder ve inkârı küfrü gerektiren seviyede sağlam delildir."],
+[3,"Bir kimsenin ölümünden sonra mallarının en fazla ne kadarlık kısmını kanuni mirasçıları dışındaki hayır veya kişilere vasiyet etme yetkisi vardır?","Üçte bir (1/3)",["Dörtte bir (1/4)", "Yarısı (1/2)", "Beşte bir (1/5)"],"Hz. Peygamber, Sa'd b. Ebi Vakkas'a mirasçıların hakkını korumak için en fazla 1/3 oranında vasiyette bulunabileceğini belirtmiştir."],
+[3,"Hükmü kaldıran ayete 'Nasih', hükmü yürürlükten kalkan ayete ise ne ad verilir?","Mensuh",["Muhkem", "Müteşabih", "Mücmel"],"İslam ilimlerinde daha sonra gelen hükmün öncekini kaldırmasına nesh; kaldırılan hükme mensuh, kaldıran ayete nasih denir."]
+);
+const QZN=10;let qzS=null,qzTm=0;
+const QZCFG={'7-10':{t:35,lives:5,base:100,wrong:0,to:0,st:3,mul:1.2,spd:2,forgive:true,mix:[1,1,1,1,1,1,1,2,2,2]},
+ '11-14':{t:25,lives:4,base:150,wrong:25,to:10,st:3,mul:1.5,spd:4,forgive:false,mix:[1,1,2,2,2,2,2,2,3,3]},
+ '15-18':{t:18,lives:3,base:200,wrong:50,to:25,st:3,mul:2.0,spd:6,forgive:false,mix:[2,2,2,3,3,3,3,3,3,3]}};
+const QZAGE=store.get('qzAge','');
+let qzAge=QZCFG[QZAGE]?QZAGE:'';
+const qzDone=new Set(store.get('qzDone',[]));
+function qzStats(){return store.get('qzSt',{c:0,best:0,runs:0});}
+function qzRank(t){return t>=35000?'Âlim':t>=15001?'Fâzıl':t>=5001?'Müderris':t>=1001?'Kâşif':'Talip';}
+function qzShow(id){['#qzHome','#qzPlay','#qzEnd'].forEach(x=>$(x).hidden=x!==id);}
+function openQuiz(){qzHome();show('#quiz',true);}
+function qzHome(){const s=qzStats(),tot=store.get('qzTot',0);
+  $('#qzInfo').textContent='Rütben: '+qzRank(tot)+' ('+fmt(tot)+' puan) · Toplam doğru: '+s.c+' · Çözülen soru: '+qzDone.size+'/'+QZQ.length;
+  document.querySelectorAll('.qzage').forEach(b=>b.classList.toggle('on',b.dataset.a===qzAge));
+  $('#qzGo').disabled=!qzAge;$('#qzGo').textContent=qzAge?'YARIŞMAYA BAŞLA':'ÖNCE YAŞ GRUBUNU SEÇ';qzShow('#qzHome');}
+function qzClose(){clearInterval(qzTm);qzS=null;show('#quiz',false);menuInfo();}
+function qzStart(){
+  if(!qzAge)return;const C=QZCFG[qzAge];
+  const idx=[...QZQ.keys()];idx.sort(()=>Math.random()-.5);
+  const pool=idx.filter(i=>!qzDone.has(i)).concat(idx.filter(i=>qzDone.has(i)));
+  const list=[];for(const L of C.mix){let k=pool.findIndex(i=>QZQ[i][0]===L&&!list.includes(i));if(k<0)k=pool.findIndex(i=>!list.includes(i));list.push(pool[k]);}
+  qzS={C,list,n:0,ok:0,streak:0,score:0,rp:0,lives:C.lives,gem:0,cr:0,locked:false};qzShow('#qzPlay');qzAsk();
+}
+function qzHearts(){let h='';for(let i=0;i<qzS.C.lives;i++)h+=i<qzS.lives?'❤️':'🖤';return h;}
+function qzAsk(){
+  const q=QZQ[qzS.list[qzS.n]],C=qzS.C;qzS.locked=false;
+  const opts=[q[2],...q[3]].map(t=>({t,r:t===q[2]}));opts.sort(()=>Math.random()-.5);
+  $('#qzNo').textContent='SORU '+(qzS.n+1)+' / '+QZN+' · '+['','KOLAY','ORTA','ZOR'][q[0]]+' · '+qzHearts()+' · ⭐ '+qzS.score;
+  $('#qzQ').textContent=q[1];const box=$('#qzOpts');box.innerHTML='';
+  opts.forEach(o=>{const b=document.createElement('button');b.className='qzopt';b.textContent=o.t;b.onclick=()=>qzPick(b,o.r,q);b.dataset.r=o.r?1:0;box.appendChild(b);});
+  $('#qzMsg').textContent='';let t=C.t;qzS.left=t;$('#qzBar').style.width='100%';clearInterval(qzTm);
+  qzTm=setInterval(()=>{t-=.1;qzS.left=Math.max(0,t);$('#qzBar').style.width=Math.max(0,t/C.t*100)+'%';if(t<=0){clearInterval(qzTm);qzPick(null,false,q,true);}},100);
+}
+function qzPick(btn,right,q,timeout){
+  if(qzS.locked)return;qzS.locked=true;clearInterval(qzTm);const C=qzS.C,lvl=q[0],qi=qzS.list[qzS.n];
+  document.querySelectorAll('.qzopt').forEach(b=>{if(b.dataset.r==='1')b.classList.add('ok');b.disabled=true;});
+  let msg;
+  if(right){
+    qzS.streak++;qzS.ok++;const rep=qzDone.has(qi);
+    const mul=qzS.streak>=C.st?C.mul:1,d=Math.round(C.base*mul+Math.round(qzS.left)*C.spd);
+    qzS.score+=d;qzS.rp+=d*(rep?.25:1);
+    if(!rep){if(lvl>=2)qzS.gem++;if(lvl>=3)qzS.cr++;}
+    qzDone.add(qi);addXP(rep?1:3);sfx.coin();
+    msg='✅ DOĞRU! +'+d+' puan'+(mul>1?' · 🔥 SERİ x'+mul:'');
+    if(qzS.streak%5===0&&qzS.lives<C.lives){qzS.lives++;msg+=' · ❤️ +1 CAN';}
+    if(rep)msg+=' (tekrar soru: ödül azaldı)';
+  }else{
+    qzS.streak=0;if(btn)btn.classList.add('bad');sfx.warn();
+    if(timeout){qzS.lives--;qzS.score=Math.max(0,qzS.score-C.to);qzS.rp-=C.to;msg='⏰ Süre bitti!'+(C.to?' -'+C.to+' puan':'')+' · −1 can';}
+    else if(C.forgive)msg='❌ Yanlış, ama can kaybetmedin! Doğru cevap yeşil.';
+    else{qzS.lives--;qzS.score=Math.max(0,qzS.score-C.wrong);qzS.rp-=C.wrong;msg='❌ Yanlış! −1 can, −'+C.wrong+' puan';}
+  }
+  if(q[4])msg+='\n'+q[4];
+  $('#qzMsg').textContent=msg;
+  const wait=q[4]?3200:1600;
+  setTimeout(()=>{if(!qzS)return;qzS.n++;if(qzS.n>=QZN||qzS.lives<=0)qzFinish();else qzAsk();},wait);
+}
+function qzFinish(){
+  const s=qzStats();s.c+=qzS.ok;s.best=Math.max(s.best,qzS.ok);s.runs++;store.set('qzSt',s);store.set('qzDone',[...qzDone]);
+  const before=store.get('qzTot',0),tot=before+qzS.score;store.set('qzTot',tot);
+  const perfect=qzS.ok===QZN;let bg=perfect?5:0,bc=perfect?5:0;
+  const g=Math.round(Math.max(0,qzS.rp)*.3);
+  gold+=g;gems+=qzS.gem+bg;crys+=qzS.cr+bc;saveGarage();menuInfo();
+  const r0=qzRank(before),r1=qzRank(tot);
+  $('#qzRes').innerHTML='<b>'+qzS.ok+' / '+QZN+' doğru · '+qzS.score+' puan</b>'+(qzS.lives<=0?'<br>💔 Canların bitti':'')+'<br>+'+g+' 🪙 · +'+(qzS.gem+bg)+' 💎 · +'+(qzS.cr+bc)+' 🔮'+(perfect?'<br>🏅 TAM PUAN BONUSU!':'')+'<br>Rütben: <b>'+r1+'</b>'+(r1!==r0?' 🎉 YENİ RÜTBE!':'');
+  qzShow('#qzEnd');sfx.zone();
+}
+$('#quizBtn').onclick=openQuiz;$('#qzGo').onclick=qzStart;$('#qzAgain').onclick=()=>{qzHome();};
+document.querySelectorAll('.qzage').forEach(b=>b.onclick=()=>{qzAge=b.dataset.a;store.set('qzAge',qzAge);qzHome();});
+$('#qzX1').onclick=qzClose;$('#qzX2').onclick=qzClose;$('#qzX3').onclick=qzClose;
+
 $('#questBtn').onclick=()=>openQuests('q');$('#achBtn').onclick=()=>openQuests('a');$('#qtQ').onclick=()=>{qTab='q';renderQuests();};$('#qtA').onclick=()=>{qTab='a';renderQuests();};$('#qtB').onclick=()=>{qTab='b';renderQuests();};$('#qClose').onclick=()=>{show('#quests',false);if(state==='wpanel')state='world';};
 dailyQuests();progUI();
 

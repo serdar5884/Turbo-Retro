@@ -6,8 +6,8 @@ android {
         applicationId "com.salihstudio.turboretro"
         minSdk 24
         targetSdk 36
-        versionCode 54
-        versionName "8.9"
+        versionCode 56
+        versionName "9.1"
     }
     signingConfigs {
         release {

@@ -37,6 +37,13 @@ public class MainActivity extends Activity {
     }
 
     @Override public void onWindowFocusChanged(boolean f) { super.onWindowFocusChanged(f); if (f) hideBars(); }
+    @Override public void onBackPressed() {
+        web.evaluateJavascript("(function(){return window.__back?window.__back():false;})()", new android.webkit.ValueCallback<String>() {
+            @Override public void onReceiveValue(String v) {
+                if (!"true".equals(v)) MainActivity.super.onBackPressed();
+            }
+        });
+    }
     @Override protected void onPause() { super.onPause(); web.onPause(); }
     @Override protected void onResume() { super.onResume(); web.onResume(); }
 }
